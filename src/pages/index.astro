@@ -1,0 +1,55 @@
+---
+import Base from '../layouts/Base.astro';
+
+// projects + recent posts are hardcoded for now (the homepage draft).
+// the writing list becomes a real feed once the 247 posts are ported in.
+const projects = [
+  { name: 'blame.today', desc: 'anonymous public blame board, over nostr', site: 'https://blame.today', repo: 'https://github.com/blame-today/blame-web' },
+  { name: 'lifescored.com', desc: 'the hidden scores institutions put on you, in the open', site: 'https://lifescored.com', repo: 'https://github.com/royashbrook/lifescored' },
+];
+const recent = [
+  { title: 'securing entra from the start', date: '2024-08-13', url: '/2024/08/13/securing-entra-from-the-start/' },
+  { title: 'philosophical musings with chatgpt', date: '2023-09-13', url: '/2023/09/13/philosophical-musings-with-chatgpt/' },
+  { title: 'saving a pc hard drive to a mac', date: '2023-04-25', url: '/2023/04/25/saving-a-pc-hard-drive-to-a-mac/' },
+];
+---
+<Base>
+  <div class="hero">
+    <div class="kicker">dad, hub, coder, tech fan</div>
+    <p>welcome to my site. i like automation and techy things. sometimes i write something or publish a tool.</p>
+  </div>
+
+  <section id="projects">
+    <p class="marker">&gt; projects</p>
+    <div class="cards">
+      {projects.map((p) => (
+        <div class="card">
+          <div class="t">{p.name}</div>
+          <div class="d">{p.desc}</div>
+          <div class="meta">live · <a href={p.site}>site</a> · <a href={p.repo}>repo</a></div>
+        </div>
+      ))}
+    </div>
+    <a href="/agents/" style="text-decoration:none;">
+      <div class="strip">
+        <div class="t">&gt; for ai agents</div>
+        <div class="d">sql-spider · blame-mcp · skills + mcps i've made</div>
+      </div>
+    </a>
+  </section>
+
+  <section id="writing">
+    <p class="marker">&gt; writing</p>
+    <ul class="posts">
+      {recent.map((r) => (
+        <li><a href={r.url}>{r.title}</a><span class="date">{r.date}</span></li>
+      ))}
+    </ul>
+    <p class="more"><a href="/blog/">247 posts, back to 2006 →</a></p>
+  </section>
+
+  <section id="elsewhere">
+    <p class="marker">&gt; elsewhere</p>
+    <p class="elsewhere"><a href="https://github.com/royashbrook">github</a> · <a href="https://www.linkedin.com/in/royashbrook">linkedin</a></p>
+  </section>
+</Base>

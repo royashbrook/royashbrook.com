@@ -1,0 +1,31 @@
+---
+import '../styles/global.css';
+const { title = 'roy ashbrook', description = 'dad, hub, coder, tech fan.' } = Astro.props;
+const nav = [
+  { name: 'projects', link: '/#projects' },
+  { name: 'agents', link: '/agents/' },
+  { name: 'writing', link: '/blog/' },
+  { name: 'about', link: '/about/' },
+];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="color-scheme" content="light dark" />
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="site-head">
+        <a class="name" href="/">roy ashbrook</a>
+        <nav>
+          {nav.map((i) => <a href={i.link}>{i.name}</a>)}
+        </nav>
+      </header>
+      <slot />
+    </div>
+  </body>
+</html>

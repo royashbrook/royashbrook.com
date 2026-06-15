@@ -1,0 +1,116 @@
+/* royashbrook.com — terminal soul, modern bones. mono everywhere, lowercase, calm. */
+
+:root {
+  --bg: #fbfbf9;
+  --fg: #1b1b18;
+  --muted: #5f5e58;
+  --faint: #8d8c84;
+  --line: rgba(0, 0, 0, 0.12);
+  --line-soft: rgba(0, 0, 0, 0.07);
+  --accent: #185fa5;
+  --card: #ffffff;
+  --max: 720px;
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, "JetBrains Mono", Menlo, Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #100f0e;
+    --fg: #e9e8e2;
+    --muted: #9b9a91;
+    --faint: #6c6b63;
+    --line: rgba(255, 255, 255, 0.14);
+    --line-soft: rgba(255, 255, 255, 0.07);
+    --accent: #7fb1e6;
+    --card: #181715;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--mono);
+  font-size: 15px;
+  line-height: 1.75;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* header / nav */
+.site-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+.site-head .name { font-weight: 500; color: var(--fg); }
+.site-head nav { display: flex; gap: 1rem; font-size: 13px; }
+.site-head nav a { color: var(--muted); }
+.site-head nav a:hover { color: var(--fg); text-decoration: none; }
+
+/* hero */
+.hero { padding: 2.25rem 0 2.5rem; }
+.hero .kicker { font-size: 13px; color: var(--faint); }
+.hero p { font-size: 16px; color: var(--muted); line-height: 1.8; margin: 0.85rem 0 0; max-width: 54ch; }
+
+/* section markers */
+.marker { font-size: 13px; color: var(--faint); margin: 0 0 0.75rem; }
+section { margin-top: 2.25rem; }
+
+/* project cards */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.75rem; }
+.card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 1rem 1.1rem;
+  background: var(--card);
+}
+.card .t { font-size: 14px; color: var(--accent); }
+.card .d { font-size: 13px; color: var(--muted); line-height: 1.65; margin: 0.4rem 0 0; }
+.card .meta { font-size: 12px; color: var(--faint); margin-top: 0.8rem; }
+.strip {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.85rem 1.1rem;
+  margin-top: 0.75rem;
+}
+.strip .t { font-size: 13px; color: var(--fg); }
+.strip .d { font-size: 13px; color: var(--muted); margin-top: 0.25rem; }
+
+/* writing list */
+.posts { list-style: none; margin: 0; padding: 0; }
+.posts li { display: flex; justify-content: space-between; gap: 1rem; padding: 0.35rem 0; }
+.posts li a { color: var(--fg); }
+.posts li .date { font-size: 13px; color: var(--faint); white-space: nowrap; }
+.more { font-size: 13px; color: var(--faint); margin-top: 0.6rem; }
+
+/* footer / elsewhere */
+.elsewhere a { color: var(--fg); }
+.elsewhere a:hover { color: var(--accent); }
+
+/* post page */
+.post h1 { font-size: 22px; font-weight: 500; margin: 0 0 0.25rem; line-height: 1.3; }
+.post .date { font-size: 13px; color: var(--faint); margin-bottom: 2rem; }
+.post-body { font-size: 15px; line-height: 1.8; }
+.post-body :is(h2, h3) { font-weight: 500; margin-top: 2rem; }
+.post-body pre { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 1rem; overflow-x: auto; font-size: 13px; }
+.post-body code { font-size: 13px; }
+.post-body img { max-width: 100%; height: auto; border-radius: 8px; }
+.post-body blockquote { border-left: 2px solid var(--line); margin: 1rem 0; padding-left: 1rem; color: var(--muted); }
