@@ -1,17 +1,17 @@
 ---
 import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
 
-// projects + recent posts are hardcoded for now (the homepage draft).
-// the writing list becomes a real feed once the 247 posts are ported in.
 const projects = [
   { name: 'blame.today', desc: 'anonymous public blame board, over nostr', site: 'https://blame.today', repo: 'https://github.com/blame-today/blame-web' },
   { name: 'lifescored.com', desc: 'the hidden scores institutions put on you, in the open', site: 'https://lifescored.com', repo: 'https://github.com/royashbrook/lifescored' },
 ];
-const recent = [
-  { title: 'securing entra from the start', date: '2024-08-13', url: '/2024/08/13/securing-entra-from-the-start/' },
-  { title: 'philosophical musings with chatgpt', date: '2023-09-13', url: '/2023/09/13/philosophical-musings-with-chatgpt/' },
-  { title: 'saving a pc hard drive to a mac', date: '2023-04-25', url: '/2023/04/25/saving-a-pc-hard-drive-to-a-mac/' },
-];
+
+// real feed off the ported collection — top 3 newest, plus the live count.
+const all = (await getCollection('posts')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const fmt = (d) => `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
+const recent = all.slice(0, 3).map((p) => ({ title: p.data.title, date: fmt(p.data.date), url: `/${p.data.path}/` }));
+const count = all.length;
 ---
 <Base>
   <div class="hero">
@@ -45,7 +45,7 @@ const recent = [
         <li><a href={r.url}>{r.title}</a><span class="date">{r.date}</span></li>
       ))}
     </ul>
-    <p class="more"><a href="/blog/">247 posts, back to 2006 →</a></p>
+    <p class="more"><a href="/blog/">{count} posts, back to 2006 →</a></p>
   </section>
 
   <section id="elsewhere">

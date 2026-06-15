@@ -1,0 +1,22 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map((post) => ({ params: { slug: post.data.path }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const d = post.data.date;
+const ds = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
+---
+<Base title={`${post.data.title} — roy ashbrook`} description={post.data.title}>
+  <article class="post">
+    <h1>{post.data.title}</h1>
+    <div class="date">{ds}</div>
+    <div class="post-body"><Content /></div>
+    <p class="more"><a href="/blog/">← all writing</a></p>
+  </article>
+</Base>
