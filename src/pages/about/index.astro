@@ -1,0 +1,30 @@
+---
+import Base from '../../layouts/Base.astro';
+
+// DRAFT timeline — professional arc, kept public-safe (no family specifics).
+// roy to trim/expand and say how personal it should get.
+const timeline = [
+  { when: '1994', what: "started as an apprentice it tech at 16. been automating things ever since." },
+  { when: 'late 90s', what: "contract dev work, mostly on the microsoft stack." },
+  { when: '2006', what: "started this blog. still going." },
+  { when: '2006–2017', what: "developer and architect at big shops (bank of america, xerox, conduent). grew into a ~300-person engineering director scope by the end." },
+  { when: '2017–now', what: "trucking and logistics systems (patriot / upt / frtl). part-time these days." },
+  { when: '2022–2025', what: "nutanix." },
+  { when: 'now', what: "building small things again: blame.today, lifescored.com, and tooling for ai agents." },
+];
+---
+<Base title="about — roy ashbrook">
+  <section style="padding-top:1.5rem;">
+    <p class="marker">&gt; about</p>
+    <p style="font-size:15px;color:var(--muted);line-height:1.8;max-width:54ch;margin:0 0 2.25rem;">the short version of how i got here. i started young and never really stopped tinkering. linkedin has the formal one.</p>
+
+    <div class="timeline">
+      {timeline.map((t) => (
+        <div class="tl-row">
+          <span class="tl-when">{t.when}</span>
+          <span class="tl-what">{t.what}</span>
+        </div>
+      ))}
+    </div>
+  </section>
+</Base>

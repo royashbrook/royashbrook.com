@@ -1,0 +1,10 @@
+{
+  // royashbrook.com on cloudflare workers static assets (matches roy's other projects).
+  // pure static: astro builds to ./dist, served as assets, no worker script needed.
+  // deploy: `npm run build && npx wrangler deploy` (validate syntax via the wrangler skill at deploy time).
+  "name": "royashbrook",
+  "compatibility_date": "2026-06-15",
+  "assets": {
+    "directory": "./dist"
+  }
+}

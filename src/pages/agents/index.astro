@@ -1,0 +1,35 @@
+---
+import Base from '../../layouts/Base.astro';
+
+const tools = [
+  {
+    name: 'sql-spider',
+    desc: 'a drop-in agent skill that builds a deterministic, closed dependency graph of a sql database (tables, views, procs, functions, triggers) by emitting read-only queries. the agent is the adapter, so no live db connection is needed.',
+    links: [
+      { label: 'repo', url: 'https://github.com/royashbrook/sql-spider' },
+    ],
+  },
+  {
+    name: 'blame-mcp',
+    desc: 'a remote mcp server that teaches any ai agent the recipe to blame things on blame.today. thin on purpose, it hands back a recipe, not actions, so it can not be abused.',
+    links: [
+      { label: 'endpoint', url: 'https://blame-mcp.royashbrook.workers.dev/mcp' },
+      { label: 'repo', url: 'https://github.com/blame-today/blame-mcp' },
+    ],
+  },
+];
+---
+<Base title="for ai agents — roy ashbrook">
+  <section style="padding-top:1.5rem;">
+    <p class="marker">&gt; for ai agents</p>
+    <p style="font-size:15px;color:var(--muted);line-height:1.8;max-width:54ch;margin:0 0 2rem;">small things i've made for ai agents. skills and mcps. clone them, point an agent at them, tell me what breaks.</p>
+
+    {tools.map((t) => (
+      <div class="card" style="margin-bottom:0.75rem;">
+        <div class="t">{t.name}</div>
+        <div class="d">{t.desc}</div>
+        <div class="meta">{t.links.map((l, i) => (<>{i > 0 ? ' · ' : ''}<a href={l.url}>{l.label}</a></>))}</div>
+      </div>
+    ))}
+  </section>
+</Base>
