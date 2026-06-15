@@ -7,7 +7,9 @@ import { fileURLToPath } from 'node:url';
 // derive paths from this script's own location so a repo rename never breaks it.
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = '/Users/roy/gh/royashbrook.github.io';
-const OUT = join(ROOT, 'src/content/posts');
+// ported posts live in their own subdir the porter owns + clears; hand-authored
+// posts live in src/content/posts/ root and survive re-ports.
+const OUT = join(ROOT, 'src/content/posts/blog');
 const POST_DIRS = ['2000s/_posts', '2010s/_posts', '2020s/_posts', '_posts'];
 
 if (existsSync(OUT)) rmSync(OUT, { recursive: true });
