@@ -12,11 +12,12 @@ for (const p of posts) {
   (byYear[y] ??= []).push(p);
 }
 const years = Object.keys(byYear).sort((a, b) => b - a);
+const earliest = years[years.length - 1];
 ---
 <Base title="writing — roy ashbrook">
   <section style="padding-top:1.5rem;">
-    <p class="marker">&gt; writing — {posts.length} posts, back to 2006</p>
-    <p class="note">this goes back to 2006. i've left the old stuff up as it was, it's a record of what i was thinking at the time, not always what i think now.</p>
+    <p class="marker">&gt; writing — {posts.length} posts, back to {earliest}</p>
+    <p class="note">this goes back to {earliest}. i've left the old stuff up as it was, it's a record of what i was thinking at the time, not always what i think now.</p>
     {years.map((y) => (
       <div style="margin-top:1.75rem;">
         <div style="font-size:13px;color:var(--faint);margin-bottom:0.5rem;">{y}</div>
