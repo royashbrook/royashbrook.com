@@ -1,10 +1,13 @@
 // one-shot porter: jekyll posts -> astro content collection, urls preserved.
 // reads the old site, writes src/content/posts/*.md. idempotent (clears target first).
 import { readdirSync, readFileSync, writeFileSync, mkdirSync, rmSync, existsSync, cpSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
+// derive paths from this script's own location so a repo rename never breaks it.
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = '/Users/roy/gh/royashbrook.github.io';
-const OUT = '/Users/roy/gh/royashbrook-astro/src/content/posts';
+const OUT = join(ROOT, 'src/content/posts');
 const POST_DIRS = ['2000s/_posts', '2010s/_posts', '2020s/_posts', '_posts'];
 
 if (existsSync(OUT)) rmSync(OUT, { recursive: true });
@@ -53,7 +56,10 @@ for (const dir of POST_DIRS) {
     let title = fm.title;
     if (!title) { title = slug.replace(/-/g, ' '); noTitle++; }
 
-    const date = fm.date ? fm.date.slice(0, 10) : `${y}-${mo}-${d}`;
+    // filename date is authoritative; only trust fm.date when it's a clean YYYY-MM-DD
+    // (one post had a malformed `date: 20200615` that coerced to 1970).
+    const fmDate = fm.date && /^\d{4}-\d{2}-\d{2}/.test(fm.date) ? fm.date.slice(0, 10) : null;
+    const date = fmDate || `${y}-${mo}-${d}`;
     // url-safe slug: drop chars that break a path (# is a fragment delimiter). title keeps them.
     const urlSlug = slug.replace(/[#?%]/g, '');
     const path = `${y}/${mo}/${d}/${urlSlug}`;
@@ -69,7 +75,7 @@ for (const dir of POST_DIRS) {
 
 // bring the images/css assets over so post media resolves at /assets/...
 const assetsSrc = join(SRC, 'assets');
-const assetsOut = '/Users/roy/gh/royashbrook-astro/public/assets';
+const assetsOut = join(ROOT, 'public/assets');
 if (existsSync(assetsSrc)) { rmSync(assetsOut, { recursive: true, force: true }); cpSync(assetsSrc, assetsOut, { recursive: true }); }
 
 dates.sort();

@@ -1,0 +1,21 @@
+---
+import Base from '../../layouts/Base.astro';
+import { projects } from '../../data/projects.js';
+---
+<Base title="projects — roy ashbrook">
+  <section style="padding-top:1.5rem;">
+    <p class="marker">&gt; projects</p>
+    <div class="cards">
+      {projects.map((p) => (
+        <div class="card">
+          <div class="t">{p.name}</div>
+          <div class="d">{p.desc}</div>
+          <div class="meta">
+            {p.site && <><a href={p.site}>site</a>{' · '}</>}
+            <a href={p.repo}>repo</a>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</Base>

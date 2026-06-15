@@ -4,7 +4,7 @@ const { title = 'roy ashbrook', description = 'dad, hub, coder, tech fan.' } = A
 // cloudflare web analytics (free, cookieless). set PUBLIC_CF_BEACON_TOKEN at build; off until then.
 const cfBeacon = import.meta.env.PUBLIC_CF_BEACON_TOKEN;
 const nav = [
-  { name: 'projects', link: '/#projects' },
+  { name: 'projects', link: '/projects/' },
   { name: 'agents', link: '/agents/' },
   { name: 'writing', link: '/blog/' },
   { name: 'about', link: '/about/' },
@@ -18,6 +18,9 @@ const nav = [
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" href="/assets/images/light_bauhaus_logo.png" />
+    <link rel="apple-touch-icon" href="/assets/images/light_bauhaus_logo.png" />
   </head>
   <body>
     <div class="wrap">

@@ -1,6 +1,6 @@
 ---
 title: "migrating git repositories from one azure devops org to another"
-date: 20200615
+date: 2020-06-15
 path: "2020/06/15/migrating-git-repositories-from-one-azure-devops-org-to-another"
 ---
 

@@ -85,6 +85,8 @@ section { margin-top: 2.25rem; }
 .card .t { font-size: 14px; color: var(--accent); }
 .card .d { font-size: 13px; color: var(--muted); line-height: 1.65; margin: 0.4rem 0 0; }
 .card .meta { font-size: 12px; color: var(--faint); margin-top: 0.8rem; }
+.tag { font-size: 11px; color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 1px 7px; }
+.note { font-size: 13px; color: var(--faint); line-height: 1.7; max-width: 56ch; margin: 0 0 1.75rem; }
 .strip {
   border: 1px solid var(--line);
   border-radius: 8px;
