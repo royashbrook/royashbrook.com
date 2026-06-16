@@ -3,6 +3,8 @@ import '../styles/global.css';
 const { title = 'roy ashbrook', description = 'dad, hub, coder, tech fan.' } = Astro.props;
 // cloudflare web analytics (free, cookieless). set PUBLIC_CF_BEACON_TOKEN at build; off until then.
 const cfBeacon = import.meta.env.PUBLIC_CF_BEACON_TOKEN;
+// canonical -> apex, so www (which also serves) doesn't read as duplicate content.
+const canonical = new URL(Astro.url.pathname, 'https://royashbrook.com').href;
 const nav = [
   { name: 'projects', link: '/projects/' },
   { name: 'agents', link: '/agents/' },
@@ -17,6 +19,7 @@ const nav = [
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="color-scheme" content="light dark" />
+    <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.ico" sizes="any" />
   </head>
   <body>
