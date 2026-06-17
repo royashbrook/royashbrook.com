@@ -14,6 +14,7 @@ export const projects = [
     desc: 'the hidden scores institutions already put on you, rebuilt in the open. every rule shown with its citation, every weight visible and editable.',
     site: 'https://lifescored.com',
     repo: 'https://github.com/royashbrook/lifescored',
+    skill: 'https://github.com/royashbrook/lifescored/blob/main/skills/lifescored/SKILL.md',
     mcp: 'https://lifescored.com/mcp',
   },
   {
