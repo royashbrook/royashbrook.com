@@ -65,8 +65,12 @@ a:hover { text-decoration: underline; }
 .site-head nav a { color: var(--muted); }
 .site-head nav a:hover { color: var(--fg); text-decoration: none; }
 
+/* one shared top gap for every page (home + sub-pages), so content doesn't jump on nav */
+.page { padding-top: 1.5rem; }
+.page > :first-child { margin-top: 0; }
+
 /* hero */
-.hero { padding: 2.25rem 0 2.5rem; }
+.hero { padding: 0 0 2.5rem; }
 .hero .kicker { font-size: 13px; color: var(--faint); }
 .hero p { font-size: 16px; color: var(--muted); line-height: 1.8; margin: 0.85rem 0 0; max-width: 54ch; }
 

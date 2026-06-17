@@ -29,7 +29,9 @@ const nav = [
           {nav.map((i) => <a href={i.link}>{i.name}</a>)}
         </nav>
       </header>
-      <slot />
+      <main class="page">
+        <slot />
+      </main>
     </div>
   </body>
 </html>
