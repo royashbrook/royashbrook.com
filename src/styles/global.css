@@ -9,7 +9,7 @@
   --line-soft: rgba(0, 0, 0, 0.07);
   --accent: #185fa5;
   --card: #ffffff;
-  --max: 720px;
+  --max: 820px;
   --mono: ui-monospace, "SF Mono", SFMono-Regular, "JetBrains Mono", Menlo, Consolas, monospace;
 }
 
@@ -35,7 +35,7 @@ body {
   background: var(--bg);
   color: var(--fg);
   font-family: var(--mono);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.75;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
