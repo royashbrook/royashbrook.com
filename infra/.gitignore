@@ -1,0 +1,5 @@
+*.tfstate
+*.tfstate.*
+.terraform/
+generated.tf
+# NOTE: .terraform.lock.hcl IS committed (pins provider versions).

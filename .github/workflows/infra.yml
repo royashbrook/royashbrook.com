@@ -1,0 +1,58 @@
+name: infra
+
+# CF clicky-layer (dns, zone settings, www redirect) as opentofu, state in R2.
+# PR touching infra/** -> plan posted as a comment. push to main touching infra/** -> apply.
+# secrets (distinct from the workers-deploy CLOUDFLARE_API_TOKEN): the tofu token is zone-scoped.
+on:
+  pull_request:
+    paths: ["infra/**"]
+  push:
+    branches: [main]
+    paths: ["infra/**"]
+
+concurrency:
+  group: infra-apply
+  cancel-in-progress: false
+
+env:
+  CLOUDFLARE_API_TOKEN: ${{ secrets.TF_CLOUDFLARE_API_TOKEN }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+
+jobs:
+  tofu:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: opentofu/setup-opentofu@v2
+        with:
+          tofu_wrapper: false
+
+      - name: init
+        run: tofu -chdir=infra init -input=false
+
+      - name: plan
+        if: github.event_name == 'pull_request'
+        id: plan
+        run: |
+          tofu -chdir=infra plan -input=false -no-color 2>&1 | tee /tmp/plan.txt
+
+      - name: comment plan on PR
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo '#### tofu plan'
+            echo '```'
+            tail -c 60000 /tmp/plan.txt
+            echo '```'
+          } > /tmp/comment.md
+          gh pr comment "${{ github.event.pull_request.number }}" --body-file /tmp/comment.md
+
+      - name: apply
+        if: github.event_name == 'push'
+        run: tofu -chdir=infra apply -input=false -auto-approve
