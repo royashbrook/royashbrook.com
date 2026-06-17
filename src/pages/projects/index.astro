@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { projects } from '../../data/projects.js';
+import { projects, projectLinkOrder } from '../../data/projects.js';
 ---
 <Base title="projects — roy ashbrook">
   <section>
@@ -11,10 +11,7 @@ import { projects } from '../../data/projects.js';
         <div class="card">
           <div class="t">{p.name}</div>
           <div class="d">{p.desc}</div>
-          <div class="meta">
-            {p.site && <><a href={p.site}>site</a>{' · '}</>}
-            <a href={p.repo}>repo</a>
-          </div>
+          <div class="meta">{projectLinkOrder.filter((k) => p[k]).map((k, i) => (<>{i > 0 ? ' · ' : ''}<a href={p[k]}>{k}</a></>))}</div>
         </div>
       ))}
     </div>

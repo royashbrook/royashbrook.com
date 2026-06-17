@@ -1,4 +1,4 @@
-import { projects } from '../data/projects.js';
+import { projects, projectLinkOrder } from '../data/projects.js';
 import { tools } from '../data/agents.js';
 
 // /llms.txt — a machine-readable index so an agent scanning the site can find
@@ -10,7 +10,7 @@ export function GET() {
   out.push('');
   out.push('## projects');
   for (const p of projects) {
-    const links = [p.site && `site: ${p.site}`, p.repo && `repo: ${p.repo}`].filter(Boolean).join(' | ');
+    const links = projectLinkOrder.filter((k) => p[k]).map((k) => `${k}: ${p[k]}`).join(' | ');
     out.push(`- ${p.name}: ${p.desc} (${links})`);
   }
   out.push('');

@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
-import { projects } from '../data/projects.js';
+import { projects, projectLinkOrder } from '../data/projects.js';
 
 // real feed off the ported collection — top 3 newest (drafts excluded), plus the live count.
 const all = (await getCollection('posts', ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
@@ -23,7 +23,7 @@ const earliest = all.length ? all[all.length - 1].data.date.getUTCFullYear() : '
         <div class="card">
           <div class="t">{p.name}</div>
           <div class="d">{p.desc}</div>
-          <div class="meta">{p.site && <><a href={p.site}>site</a>{' · '}</>}<a href={p.repo}>repo</a></div>
+          <div class="meta">{projectLinkOrder.filter((k) => p[k]).map((k, i) => (<>{i > 0 ? ' · ' : ''}<a href={p[k]}>{k}</a></>))}</div>
         </div>
       ))}
     </div>
