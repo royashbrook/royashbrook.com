@@ -1,8 +1,7 @@
 ---
 import '../styles/global.css';
 const { title = 'roy ashbrook', description = 'dad, hub, coder, tech fan.' } = Astro.props;
-// cloudflare web analytics (free, cookieless). set PUBLIC_CF_BEACON_TOKEN at build; off until then.
-const cfBeacon = import.meta.env.PUBLIC_CF_BEACON_TOKEN;
+// cloudflare web analytics is injected automatically at the CF edge (zone-level), no snippet needed.
 // canonical -> apex, so www (which also serves) doesn't read as duplicate content.
 const canonical = new URL(Astro.url.pathname, 'https://royashbrook.com').href;
 const nav = [
@@ -32,8 +31,5 @@ const nav = [
       </header>
       <slot />
     </div>
-    {cfBeacon && (
-      <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={`{"token": "${cfBeacon}"}`}></script>
-    )}
   </body>
 </html>
