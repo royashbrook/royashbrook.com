@@ -69,8 +69,8 @@ a:hover { text-decoration: underline; }
 .page { padding-top: 1.5rem; }
 .page > :first-child { margin-top: 0; }
 
-/* hero */
-.hero { padding: 0 0 2.5rem; }
+/* hero (no padding; top gap from .page, bottom gap from the next section's margin) */
+.hero { padding: 0; }
 .hero .kicker { font-size: 13px; color: var(--faint); }
 .hero p { font-size: 16px; color: var(--muted); line-height: 1.8; margin: 0.85rem 0 0; max-width: 54ch; }
 
