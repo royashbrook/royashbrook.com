@@ -16,14 +16,16 @@ redirect. State lives in R2 (`royashbrook-tfstate`). Changes flow plan-on-PR / a
 
 ## secrets (never in tofu state)
 
-Three values, kept in the macOS keychain via the `secrets` skill, never printed:
-`cf-tofu-token`, `r2-tofu-key-id`, `r2-tofu-secret`. They're also pushed to GH Actions secrets as
+Three values, kept in the OS keychain via [hush](https://github.com/royashbrook/hush), never printed:
+`royashbrook-cf-tofu-token`, `royashbrook-r2-tofu-key-id`, `royashbrook-r2-tofu-secret` (default `hush`
+namespace, project-prefixed names). They're also pushed to GH Actions secrets as
 `TF_CLOUDFLARE_API_TOKEN`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` for CI.
 
 ## running locally
 
 ```sh
-S=~/.claude/skills/secrets/scripts/secret
-$S run CLOUDFLARE_API_TOKEN=cf-tofu-token AWS_ACCESS_KEY_ID=r2-tofu-key-id AWS_SECRET_ACCESS_KEY=r2-tofu-secret \
+hush run CLOUDFLARE_API_TOKEN=royashbrook-cf-tofu-token \
+         AWS_ACCESS_KEY_ID=royashbrook-r2-tofu-key-id \
+         AWS_SECRET_ACCESS_KEY=royashbrook-r2-tofu-secret \
   -- tofu -chdir=infra plan
 ```
