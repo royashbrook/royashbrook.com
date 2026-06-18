@@ -24,6 +24,12 @@ export const projects = [
     skill: 'https://github.com/royashbrook/sql-spider/blob/main/SKILL.md',
   },
   {
+    name: 'hush',
+    desc: 'a secret store for ai agents whose one rule is the agent never sees the plaintext. store a credential once in your os keychain, then inject it into the tools you already use, never printed, never committed. mac, linux, and windows.',
+    repo: 'https://github.com/royashbrook/hush',
+    skill: 'https://github.com/royashbrook/hush/blob/main/SKILL.md',
+  },
+  {
     name: 'neveraway',
     desc: "keeps you from showing 'away' in chat apps.",
     site: 'https://neveraway.github.io',

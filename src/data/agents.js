@@ -11,6 +11,13 @@ export const tools = [
     links: [{ label: 'repo', url: 'https://github.com/royashbrook/sql-spider' }],
   },
   {
+    name: 'hush',
+    type: 'skill',
+    desc: 'a secret store for ai agents with one hard rule: the agent never sees the plaintext. an agent gets a value once into the os keychain (a hidden paste dialog, or it mints a random one), then injects it into the clis you already use, never printed, never in the chat, never committed. mac, linux, and windows backends built in.',
+    use: 'clone into .claude/skills/',
+    links: [{ label: 'repo', url: 'https://github.com/royashbrook/hush' }],
+  },
+  {
     name: 'blame-mcp',
     type: 'mcp',
     desc: 'a remote mcp server that teaches any ai agent the recipe to blame things on blame.today. thin on purpose, it hands back a recipe, not actions, so it can not be abused.',
