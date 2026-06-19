@@ -1,8 +1,11 @@
 {
   // royashbrook.com on cloudflare workers static assets (matches roy's other projects).
   // pure static: astro builds to ./dist, served as assets, no worker script needed.
-  // deploy: `npm run build && npx wrangler deploy` (validate syntax via the wrangler skill at deploy time).
+  // deploy: pushed to main -> .github/workflows/deploy.yml builds + deploys. or locally:
+  // `npm run build && npx wrangler deploy` (validate syntax via the wrangler skill at deploy time).
   "name": "royashbrook",
+  // account id is not a secret; inlining it lets CI (and local) deploy without an account picker.
+  "account_id": "b13c1cf2483bdad430b91ae25126e984",
   "compatibility_date": "2026-06-15",
   "assets": {
     "directory": "./dist"

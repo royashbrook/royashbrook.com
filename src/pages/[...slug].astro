@@ -3,7 +3,10 @@ import { getCollection, render } from 'astro:content';
 import Base from '../layouts/Base.astro';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('posts');
+  // drafts are viewable in `astro dev` (direct url) for preview, but NEVER built into a production
+  // deploy , so an unreviewed/unpublished post can't be reached by url or indexed. the feed
+  // (index + /blog) already excludes drafts from the listing; this closes the slug-page leak too.
+  const posts = await getCollection('posts', ({ data }) => import.meta.env.DEV || !data.draft);
   return posts.map((post) => ({ params: { slug: post.data.path }, props: { post } }));
 }
 
