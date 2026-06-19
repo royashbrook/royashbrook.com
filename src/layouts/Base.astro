@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import Footer from '../components/Footer.astro';
 const { title = 'roy ashbrook', description = 'dad, hub, coder, tech fan.' } = Astro.props;
 // cloudflare web analytics is injected automatically at the CF edge (zone-level), no snippet needed.
 // canonical -> apex, so www (which also serves) doesn't read as duplicate content.
@@ -32,6 +33,7 @@ const nav = [
       <main class="page">
         <slot />
       </main>
+      <Footer />
     </div>
   </body>
 </html>
