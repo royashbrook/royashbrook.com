@@ -4,7 +4,7 @@ date: 2013-03-08
 path: "2013/03/08/how-to-write-a-basic-sniffer-in-powershell"
 ---
 
-So I [recently](http://www.drowningintechnicaldebt.com/RoyAshbrook/archive/2013/02/13/simple-sniffer-in-c.aspx) wrote a little sniffer in C# and decided I wanted to convert it to PowerShell. I ran into a little weirdness with the way that the bitwise operators worked in PowerShell. But before I talk about that let me describe the two ways to port your C# app to PowerShell.
+So I [recently](https://royashbrook.com/2013/02/13/simple-sniffer-in-csharp/) wrote a little sniffer in C# and decided I wanted to convert it to PowerShell. I ran into a little weirdness with the way that the bitwise operators worked in PowerShell. But before I talk about that let me describe the two ways to port your C# app to PowerShell.
 
 - Just include the .NET code and call it
 - Actually write it in PowerShell
