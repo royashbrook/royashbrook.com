@@ -1,0 +1,14 @@
+# cite map for royashbrook.com posts.
+# lets cite (the skill) link Roy's own projects + known externals to the RIGHT public url instead of
+# guessing or flagging them as unsourceable (a cold agent can't know "hush" = royashbrook/hush).
+# format: name = owner/repo   # site / notes
+
+# roy's published projects
+hush = royashbrook/hush
+sql-spider = royashbrook/sql-spider
+lifescored = royashbrook/lifescored        # site: https://lifescored.com
+blame = blame-today/blame-web              # site: https://blame.today
+# cite = royashbrook/cite                  # not public yet , add this line when it's published
+
+# externals Roy references (NOT his , cite them honestly, never as his own)
+graphify = safishamsi/graphify            # open-source knowledge-graph tool sql-spider can output to
