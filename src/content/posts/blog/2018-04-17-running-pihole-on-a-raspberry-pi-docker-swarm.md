@@ -4,9 +4,9 @@ date: 2018-04-17
 path: "2018/04/17/running-pihole-on-a-raspberry-pi-docker-swarm"
 ---
 
-OK, so this was a bit entertaining. There are a ton of articles out there on how to get a Docker Swarm running on a RasPi cluster. Basically, just get all of the Pis up, updated, and setup with static/reserved IPs, then install docker, then run the docker swarm init command and join the workers as you have them. Yay, now you have a docker swarm.
+OK, so this was a bit entertaining. There are a ton of articles out there on how to get a [Docker Swarm](https://docs.docker.com/engine/swarm/) running on a RasPi cluster. Basically, just get all of the Pis up, updated, and setup with static/reserved IPs, then install docker, then run the docker swarm init command and join the workers as you have them. Yay, now you have a docker swarm.
 
-In my case I wanted to get PiHole running on the swarm. Fortunately, there is already a docker image for that [here](https://hub.docker.com/r/diginc/pi-hole/). They provide a docker run command, but not a docker service command, so we'll have to deal with that.
+In my case I wanted to get [PiHole](https://pi-hole.net/) running on the swarm. Fortunately, there is already a docker image for that [here](https://hub.docker.com/r/diginc/pi-hole/). They provide a docker run command, but not a docker service command, so we'll have to deal with that.
 
 There are several bad/good news items regarding this setup. I'll break them down into a few areas.
 
@@ -16,7 +16,7 @@ The bad news was that docker doesn't appear to be able to create a real Virtual 
 
 That's grand, the only bad thing is that I really wanted to run TWO piholes for backup, but you can only publish one service on that port on the swarm. The good thing is that if you publish the service you can really hand out any two IPs in the swarm and it will work. So as long as those two machines don't go down, you are good. This is basically the same situation you have with two single machines from a failure perspective, but from a load perspective, the swarm will load balance everything anyway. You *can* simply setup one service replica and it will bring it back up, but since it's DNS, I wanted to make sure it was up so I hand out two IPs and have it set to two replicas. The IPs don't actually matter as they could be any in the swarm, the important thing is that there are at least two.
 
-If we were using named services or something we could give DNS entries to, there are a ton of load balancers/reverse proxy solutions out there for solving this problem. I couldn't do that with DNS since you are handing out an IP. It would be nice if you could create a public VIP that any/all of the hosts could answer, but that doesn't appear to be a thing that will currently work since the IP has to be associated with *something* for routing. I think you can use the macvlan networking if you want to do this in some fashion, but I decided to just go the service route and hand out a couple of IPs from my swarm and let docker do the hard work.
+If we were using named services or something we could give DNS entries to, there are a ton of load balancers/reverse proxy solutions out there for solving this problem. I couldn't do that with DNS since you are handing out an IP. It would be nice if you could create a public VIP that any/all of the hosts could answer, but that doesn't appear to be a thing that will currently work since the IP has to be associated with *something* for routing. I think you can use the [macvlan](https://docs.docker.com/network/drivers/macvlan/) networking if you want to do this in some fashion, but I decided to just go the service route and hand out a couple of IPs from my swarm and let docker do the hard work.
 
 In my case, I have 4 raspis with 192.168.2.201-204, so I just picked .201 and .202 for the DNS IPs to hand out on my LAN. You can actually go to the others and it works fine too, but my router is only handing out two IPs so... that's how it is. 😀 (we'll talk another day about getting DHCP setup like this and then handing out all 4 IPs, muhahaha!)
 
@@ -32,7 +32,7 @@ So the solution for this was basically `mkdir /home/pi/pihole /home/pi/dnsmasq.d
 
 So this one was a huge pain for me, but it ended up being a very simple solution. I am supposing I could have eventually read all of the docker service command documentation and maybe I would have found this, but it is far more likely that I would have just looked for a way around this or moved on to some other solution. Ah, the *problem* was that I would try and run the docker service command after translating the docker run command and it would tell `no suitable node (unsupported platform on 4 nodes)` no matter what I tried. I tried various images, changing the OS ID and a number of other little odd tricks. I could actually run the same image using docker run with no issues, but docker service was a no go.
 
-Finally while googling, I came across [this](https://github.com/docker/swarmkit/issues/2294) issue and the quote below from [hero of the day](https://github.com/nishanttotla), my man Nishant!
+Finally while googling, I came across [this](https://github.com/moby/swarmkit/issues/2294) issue and the quote below from [hero of the day](https://github.com/nishanttotla), my man Nishant!
 
 > @trunet I'm not sure about that, but we'll see what's the best way to resolve this. Until then, you can get around this issue by using the `--no-resolve-image`flag on service create/update which will not add platform information to your service spec.
 
