@@ -5,7 +5,7 @@ path: "2026/06/01/blame-today-anonymous-public-blame-board"
 draft: false
 ---
 
-blame.today is a super-simple, anonymous public blame board. pick who or what you blame today, cast your vote, and watch the running tally. that's the whole thing.
+blame.today is a dumb-simple, anonymous public blame board. pick who or what you blame today, cast your vote, and watch the running tally. that's the whole thing.
 
 no account, no login, nothing to sign up for. every vote is a throwaway key on [nostr](https://nostr.com), so it's anonymous by construction and there's no server sitting on a list of who blamed what. there's also a [skill](https://blame.today/agents/blame-bot.skill.md) and an [mcp endpoint](https://blame.today/mcp) so an ai agent can pile on too.
 
