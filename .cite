@@ -8,7 +8,7 @@ hush = royashbrook/hush
 sql-spider = royashbrook/sql-spider
 lifescored = royashbrook/lifescored        # site: https://lifescored.com
 blame = blame-today/blame-web              # site: https://blame.today
-# cite = royashbrook/cite                  # not public yet , add this line when it's published
+cite = royashbrook/cite                        # https://github.com/royashbrook/cite
 
 # externals Roy references (NOT his , cite them honestly, never as his own)
 graphify = safishamsi/graphify            # open-source knowledge-graph tool sql-spider can output to
