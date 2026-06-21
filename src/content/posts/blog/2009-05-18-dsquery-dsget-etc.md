@@ -4,7 +4,7 @@ date: 2009-05-18
 path: "2009/05/18/dsquery-dsget-etc"
 ---
 
-how i have lived this long in my life without familiarity with these commands is beyond me. i'm a big fan of the command line especially commands that are already or mostly built in. these come with the admin pack. so much easier than opening up the ad user group mgr and other gui tools. here's a sample command.
+how i have lived this long in my life without familiarity with [these commands](https://learn.microsoft.com/en-us/archive/technet-wiki/2195.active-directory-dsquery-commands) is beyond me. i'm a big fan of the command line especially commands that are already or mostly built in. these come with the admin pack. so much easier than opening up the ad user group mgr and other gui tools. here's a sample command.
 
 ``` ps1
 dsquery group -name "any domain group in your domain" |

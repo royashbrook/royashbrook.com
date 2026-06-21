@@ -6,7 +6,7 @@ path: "2020/09/04/adding-chart-labels-with-chart-js-to-bar-charts-and-stacked-ba
 
 I'll preface this by saying that you probably should just use the the official data label plugin from chartjs. You can find that [here](https://github.com/chartjs/chartjs-plugin-datalabels). I didn't want to add another dependency for charting, however, so I decided to just roll my own setup. Here are two ways I did this.
 
-I will also add a caveat that I am not a chartjs expert. I do use it for my charting, but mostly that is because it handles combo charts easier than some of the other ones I tried. I don't have to touch these charts too much and I don't mind refreshing my memory every time I go to make updates.
+I will also add a caveat that I am not a [chartjs](https://www.chartjs.org/) expert. I do use it for my charting, but mostly that is because it handles combo charts easier than some of the other ones I tried. I don't have to touch these charts too much and I don't mind refreshing my memory every time I go to make updates.
 
 ## Plugin
 

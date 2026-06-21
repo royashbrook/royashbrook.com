@@ -4,7 +4,7 @@ date: 2024-08-13
 path: "2024/08/13/securing-entra-from-the-start"
 ---
 
-i recently switched my domain over to a new microsoft tenant and began getting emails from entra for things i need to secure. i thought, as i just have a single account with many aliases, i would look at all of the recommendations that were made out of the gate. first, a little background...
+i recently switched my domain over to a new microsoft tenant and began getting emails from [entra](https://learn.microsoft.com/en-us/entra/fundamentals/what-is-entra) for things i need to secure. i thought, as i just have a single account with many aliases, i would look at all of the recommendations that were made out of the gate. first, a little background...
 
 # but why tho?
 

@@ -4,7 +4,7 @@ date: 2010-08-20
 path: "2010/08/20/linqpad-and-active-directory"
 ---
 
-I am a huge fan of LINQPad.
+I am a huge fan of [LINQPad](https://www.linqpad.net/).
 
 Something on my wish-list, as far as my own personal knowledge, for a longtime with it was how to query Active Directory information when I needed it. This was more for convenience because quite often I need to look up some AD info when I am looking at a scrub for some data regarding a user. Normally I just net use or dsquery/dsget etc. The key is System.DirectoryServices.AccountManagement. Note this is a .NET 3.5 and 4.0 only library so earlier than that, sorry. You aren't out of luck, but the other ways seem to be less cumbersome to me than this very easy way. Be mindful of the fact that performing a .Dump() on one of these objects will produce a TON of stuff. So doing something like User.GetGroups().Dump() is probably a Very Bad IdeaTM. Also, don't forget that since we're using LINQ to Objects, you will have case sensitivity issues unless you deal with it yourself.
 

@@ -95,7 +95,7 @@ We currently house some data on o365 and use msgraph for this purpose in another
 
 ## Day 4 (but not calendar day 4 😛)
 
-Off and on tasks bumped in front of this over the course of about a week somewhat stalling any changes. When I came back to things on a fresh monday, I was ready for a fresh start an decided I would just take a hard turn and spin up a blazor/wasm app to test things out that way. This day was mostly spent cleaning up the existing progress, bundling all of the updates/changes I had fiddled with into a PR on my repo, and putting together my planned next steps. Which *really* just amounted to 'make a blazor/wasm version of this'.
+Off and on tasks bumped in front of this over the course of about a week somewhat stalling any changes. When I came back to things on a fresh monday, I was ready for a fresh start an decided I would just take a hard turn and spin up a [blazor/wasm](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor) app to test things out that way. This day was mostly spent cleaning up the existing progress, bundling all of the updates/changes I had fiddled with into a PR on my repo, and putting together my planned next steps. Which *really* just amounted to 'make a blazor/wasm version of this'.
 
 I'm on a pretty new macbook and I haven't installed dotnet tools on here yet! So this also gives me a chance to run through some of those steps that I did.
 

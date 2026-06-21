@@ -10,7 +10,7 @@ path: "2010/05/26/top-10-best-logparser-links-plus-a-bonus-7"
 
 2. http://www.symantec.com/connect/articles/forensic-log-parsing-microsofts-logparser
 
-    This one is second fav because it uses the word 'forensic' and they are doing a scenario track down instead of just a bunch of random queries. This one is usually the first extended stop because it uses actual LogParser commands instead of just listing the sql queries.
+    This one is second fav because it uses the word 'forensic' and they are doing a scenario track down instead of just a bunch of random queries. This one is usually the first extended stop because it uses actual [LogParser](https://en.wikipedia.org/wiki/Logparser) commands instead of just listing the sql queries.
 
 3. http://serverfault.com/questions/45516/recommended-logparser-queries-for-iis-monitoring
 

@@ -4,7 +4,7 @@ date: 2010-06-08
 path: "2010/06/08/careful-with-your-linq-joins-where-in-tsql-with-linq"
 ---
 
-So today I needed to cross reference some stuff in a text file with some stuff in a db. No big deal. Had about 200 unique values to lookup a few pieces of info out of a larger table in a db. The target table had about a half million rows in it, but was indexed on this particular column I needed to lookup on so it seemed like it should be no big deal. I have found myself using LINQPad more and more for little ad-hoc stuff like this.
+So today I needed to cross reference some stuff in a text file with some stuff in a db. No big deal. Had about 200 unique values to lookup a few pieces of info out of a larger table in a db. The target table had about a half million rows in it, but was indexed on this particular column I needed to lookup on so it seemed like it should be no big deal. I have found myself using [LINQPad](https://www.linqpad.net/) more and more for little ad-hoc stuff like this.
 
 Anyway, I was prepared to do something similar to this:
 

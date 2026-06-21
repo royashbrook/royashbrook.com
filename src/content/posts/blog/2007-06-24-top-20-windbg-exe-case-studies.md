@@ -9,7 +9,7 @@ layout: post
 title: Top 10 WinDbg.exe Usage Articles
 ---
 
-These are the articles (in no particular order) that I felt best showed a thorough use of the WinDbg.exe tool from start to finish. They were absolutely priceless to me. Enjoy!
+These are the articles (in no particular order) that I felt best showed a thorough use of the [WinDbg.exe](https://en.wikipedia.org/wiki/WinDbg) tool from start to finish. They were absolutely priceless to me. Enjoy!
 
 <ol>
     <li>

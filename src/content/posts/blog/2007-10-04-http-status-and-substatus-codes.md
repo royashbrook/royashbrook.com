@@ -9,7 +9,7 @@ layout: post
 title: HTTP Status and SubStatus codes
 ---
 
-HTTP Status and SubStatus codes
+[HTTP Status](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes) and SubStatus codes
 
 <table style="WIDTH: 549pt; BORDER-COLLAPSE: collapse" border="0" cellspacing="0" cellpadding="0" width="731" x:str="">
     <colgroup><col style="WIDTH: 63pt; mso-width-source: userset; mso-width-alt: 3072" width="84" /><col style="WIDTH: 83pt; mso-width-source: userset; mso-width-alt: 4022" width="110" /><col style="WIDTH: 403pt; mso-width-source: userset; mso-width-alt: 19638" width="537" /></colgroup>

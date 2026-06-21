@@ -11,7 +11,7 @@ Install It:
     - Basically, I logged into my new machine and ran:
     - sudo yum install http://yum.basho.com/gpg/basho-release-5-1.noarch.rpm
     - sudo yum install riak
-- If you want this to be available outside of your machine, you need to modify the ip address riak is bound to.
+- If you want this to be available outside of your machine, you need to modify the ip address [riak](https://en.wikipedia.org/wiki/Riak) is bound to.
     - If you were logged in as root, go to the /etc/riak folder and edit the app.config
     - Modify the "http" area to have your public ip address as well as the 'PB' area up top.
 - Run "riak start" to start up riak

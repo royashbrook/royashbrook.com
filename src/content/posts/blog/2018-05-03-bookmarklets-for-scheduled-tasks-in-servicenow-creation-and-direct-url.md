@@ -4,12 +4,12 @@ date: 2018-05-03
 path: "2018/05/03/bookmarklets-for-scheduled-tasks-in-servicenow-creation-and-direct-url"
 ---
 
-So, recently we've moved over to ServiceNow for incident/request management. There are two things I wanted to be able to do:
+So, recently we've moved over to [ServiceNow](https://en.wikipedia.org/wiki/ServiceNow) for incident/request management. There are two things I wanted to be able to do:
 
 - Create a ticket and autopopulate it with a few things. (In my case, I am really just creating an item to track some work for myself, so I usually just use the same info, record some notes, and later close it so we have a 'number' to use for auditing)
 - Get a link to a scheduled task to send to other folks or add to my notes if I want to link to it.
 
-To that end, I created a couple of bookmarklets.
+To that end, I created a couple of [bookmarklets](https://en.wikipedia.org/wiki/Bookmarklet).
 
 <script src="https://gist.github.com/royashbrook/e8581d6bb1fec82165ef24d36940d899.js"></script>
 

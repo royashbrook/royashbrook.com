@@ -4,7 +4,7 @@ date: 2022-06-14
 path: "2022/06/14/Migrating-a-dotnet-CLI-app-to-Blazor-WASM"
 ---
 
-I have an old app written in dotnetcore that i'd like to turn into a static app to run on the web. Seems like a decent candidate for blazor/wasm. Here's the steps I went through to do it!
+I have an old app written in dotnetcore that i'd like to turn into a static app to run on the web. Seems like a decent candidate for [blazor/wasm](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor). Here's the steps I went through to do it!
 
 ## A template?
 

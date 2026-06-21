@@ -9,7 +9,7 @@ layout: post
 title: how do i alter fill factor on all tables in a database or for a whole server
 ---
 
-Recently we had an issue at work where nightly MS SQL Server DB index defrags were taking a long time. Upon looking at the logs it appeared that almost all of the tables were fragmented quite often. It didn't take long to ask if anyone ever modified the fill factor from the default of 0. Nope. If you can't set it in a wider fashion for the whole server due to permissions, controls, politics, solar flares, whatever, here's a script that will set the fill factor to 90 on each table and show the table it's processing.
+Recently we had an issue at work where nightly MS SQL Server DB index defrags were taking a long time. Upon looking at the logs it appeared that almost all of the tables were fragmented quite often. It didn't take long to ask if anyone ever modified the [fill factor](https://learn.microsoft.com/en-us/sql/relational-databases/indexes/specify-fill-factor-for-an-index) from the default of 0. Nope. If you can't set it in a wider fashion for the whole server due to permissions, controls, politics, solar flares, whatever, here's a script that will set the fill factor to 90 on each table and show the table it's processing.
 
 `sp_MSforeachtable @command1="print '?' alter index all on ? rebuild with (pad_index=on,fillfactor=90,sort_in_tempdb = on)"`
 

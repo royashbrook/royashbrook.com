@@ -4,7 +4,7 @@ date: 2008-01-04
 path: "2008/01/04/sql2005-recursion-common-table-expressions-ctes-hierarchical-data"
 ---
 
-A colleague of mine that is more familiar with Oracle than MSSql asked me how to create a CONNECT BY query in TSQL. CONNECT BY queries provide for recursive results or views on hierarchical data. The answer is to use a Common Table Expression or CTE. Here is a very simple example that is actually pretty close to what he needed. This assumes a very basic table named 'categories' with an int id, name varchar, int parent_id column and you can put in your constraints. it holds categories and parent categories. the top level will have a null for a parent_id.
+A colleague of mine that is more familiar with Oracle than MSSql asked me how to create a CONNECT BY query in TSQL. CONNECT BY queries provide for recursive results or views on hierarchical data. The answer is to use a [Common Table Expression or CTE](https://en.wikipedia.org/wiki/Hierarchical_and_recursive_queries_in_SQL). Here is a very simple example that is actually pretty close to what he needed. This assumes a very basic table named 'categories' with an int id, name varchar, int parent_id column and you can put in your constraints. it holds categories and parent categories. the top level will have a null for a parent_id.
 
 ``` sql
 with cte(name, id, lvl, sk)

@@ -15,7 +15,7 @@ Pros:
 Cons:
 
 - No usage based pricing
-- Requires usage of the Amazon Workspaces Client
+- Requires usage of the [Amazon Workspaces](https://aws.amazon.com/workspaces/) Client
 - Can't save password, makes complex passwords a pain
 - Can't move to different workspace easily
 - Cheap plan not really fast enough for me.

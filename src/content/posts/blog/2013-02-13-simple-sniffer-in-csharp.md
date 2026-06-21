@@ -9,7 +9,7 @@ Recently I had a need to audit network traffic on some servers. Believing we had
 My requirements:
 
 - I only want Protocol Type, Source/Destination IPs and Ports (No Packet Data)
-- Be promiscuous (meaning, get all of the data that we can see, even if it’s not for me)
+- Be [promiscuous](https://en.wikipedia.org/wiki/Promiscuous_mode) (meaning, get all of the data that we can see, even if it’s not for me)
 - IPv4 only
 
 You could argue that this is more of a packet header logger than sniffer, but the logic is there if you want to parse the rest of the packet. Using the references  below you can find classes for the full IP and TCP headers as well as other info. Using that you could cache all of the packet data etc. I didn’t really want to build something to view cached data (like mjsniffer below), I just wanted the basics about the packets that are in flight. Anyway, the code is below. You can actually copy/paste this almost into LINQpad and run it there if you want. You have to convert the usings and a couple of other details but it works fine.

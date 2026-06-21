@@ -9,7 +9,7 @@ layout: post
 title: chunking varbinary into sql2005
 ---
 
-Sample code for chunking varbinary data into sql2005
+Sample code for chunking [varbinary](https://learn.microsoft.com/en-us/sql/t-sql/data-types/binary-and-varbinary-transact-sql?view=sql-server-ver17) data into sql2005
 
 <script src="https://gist.github.com/royashbrook/780d9336cff9ab2360ddbe06d9828d11.js"></script>
 

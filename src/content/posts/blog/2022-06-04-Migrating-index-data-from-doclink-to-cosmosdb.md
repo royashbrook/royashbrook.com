@@ -8,7 +8,7 @@ After [moving all of our documents into blob storage](/2022/04/18/Moving-15-mill
 
 ## What happened?
 
-Well, nothing terrible. I moved everything and it all worked fine. But while testing with *another* stakeholder who wasn't engaged in the original discussion, we discovered some of the index data that was not moved, was something that they used. So I decided to go back and basically rebuild the cosmos db. Not delete the existing one, but just import a new one and update the keys and links to use the new one.
+Well, nothing terrible. I moved everything and it all worked fine. But while testing with *another* stakeholder who wasn't engaged in the original discussion, we discovered some of the index data that was not moved, was something that they used. So I decided to go back and basically rebuild the [cosmos db](https://learn.microsoft.com/en-us/azure/cosmos-db/overview). Not delete the existing one, but just import a new one and update the keys and links to use the new one.
 
 Since I'm having to do this once, I don't really want to have to fiddle with the old SQL 2008 box (R1, yuck) anymore, so I wanted to go ahead and get this database just restored into a local docker container. I could put it on Azure like I did last time, but would be nice to just dev locally using docker.
 

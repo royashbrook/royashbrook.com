@@ -4,7 +4,7 @@ date: 2010-06-03
 path: "2010/06/03/sqlce-on-iis"
 ---
 
-So this apparently isn't supported, but I just thought I would jot down some notes about how to get it working. It is really not that hard as long as you don't mind installing SQLCE on your IIS server. I am still working on how to distribute the SQLCE files with the application.
+So this apparently isn't supported, but I just thought I would jot down some notes about how to get it working. It is really not that hard as long as you don't mind installing [SQLCE](https://en.wikipedia.org/wiki/SQL_Server_Compact) on your IIS server. I am still working on how to distribute the SQLCE files with the application.
 
 I have a very small set of data that is mostly read and so I wanted to just dump it on a web server and not have a sql server. SQLCE seemed perfect for this although apparently that's not a use it's currently designed for. Here are some links I had open while I was working on this:
 

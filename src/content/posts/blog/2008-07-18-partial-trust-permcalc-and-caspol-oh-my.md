@@ -8,7 +8,7 @@ System.Security.SecurityExceptions will always be … well some kind of security
 
 Running .net exes over the network requires different .net perms. You can see the perms an assembly requires using permcalc from the .net sdk. It used to be called… I think permview.
 
-You can run caspol –rs[g/p] %path to assembly% to see some info on the permissions. G will show you the groups it belongs to in the gac, P will list the permissions.
+You can run [caspol](https://en.wikipedia.org/wiki/Code_Access_Security) –rs[g/p] %path to assembly% to see some info on the permissions. G will show you the groups it belongs to in the gac, P will list the permissions.
 
 ``` plaintext
 From: xxxxxxxxxxxxxxx

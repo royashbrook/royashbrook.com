@@ -6,7 +6,7 @@ path: "2006/12/01/qwinsta-rwinsta-and-reg-oh-my"
 
 i figured i would make a quick post of some rdp type info i know. realize that all of these require you have the appropriate permissions.
 
-have you ever tried to login to a machine via rdp only to get the message that there are too many sessions? well here's how to kill one of those sessions. first of all, you need to see what sessions there are. to do that, we can utilize the command line tool qwinsta. type qwinsta /? to see the syntax. here's a sample:
+have you ever tried to login to a machine via rdp only to get the message that there are too many sessions? well here's how to kill one of those sessions. first of all, you need to see what sessions there are. to do that, we can utilize the command line tool [qwinsta](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/qwinsta). type qwinsta /? to see the syntax. here's a sample:
 
 ```
 C:\>qwinsta /server:server1
@@ -16,7 +16,7 @@ C:\>qwinsta /server:server1
  rdp-tcp#10        user1234                  2  Active  rdpwd
 ```
 
-as you can see, user1234 has an active connection on id2. now, typically, someone has an inactive session or something like that. and that's who you'd want to kick. but let's pretend we know that user1234 is just doing something silly like surfing the web on server1 and kick him off. to do *that* we'll utilize rwinsta to reset the connection. at this point you can see the complex naming system emerge. rwinsta for resetting connections, and qwinsta for querying connections. as per usual, type rwinsta /? to see syntax. here's an example:
+as you can see, user1234 has an active connection on id2. now, typically, someone has an inactive session or something like that. and that's who you'd want to kick. but let's pretend we know that user1234 is just doing something silly like surfing the web on server1 and kick him off. to do *that* we'll utilize [rwinsta](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/rwinsta) to reset the connection. at this point you can see the complex naming system emerge. rwinsta for resetting connections, and qwinsta for querying connections. as per usual, type rwinsta /? to see syntax. here's an example:
 
 ```
 C:\>rwinsta 2 /server:server1

@@ -6,7 +6,7 @@ path: "2007/03/20/query-snmp-from-vbscript"
 
 if anyone finds a way to do more, let me know. i have not found a way to query a specific oid via vbscript without using a com object specifically for this or an external command.
 
-this method uses the wmi snmp provider. valid values for the class variable below, as far as i know,  are currently:
+this method uses the [wmi](https://en.wikipedia.org/wiki/Windows_Management_Instrumentation) [snmp](https://en.wikipedia.org/wiki/Simple_Network_Management_Protocol) provider. valid values for the class variable below, as far as i know,  are currently:
 - SNMP_RFC1213_MIB_snmp
 - SNMP_RFC1213_MIB_ip
 - SNMP_RFC1213_MIB_ipRouteTable

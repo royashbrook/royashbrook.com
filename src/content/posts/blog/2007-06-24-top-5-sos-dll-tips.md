@@ -9,7 +9,7 @@ layout: post
 title: Top 5 SOS.dll Tips
 ---
 
-5 things I wish I had known or done prior to attempting to work with SOS.dll and windbg.exe: 
+5 things I wish I had known or done prior to attempting to work with [SOS.dll](https://learn.microsoft.com/en-us/dotnet/framework/tools/sos-dll-sos-debugging-extension) and windbg.exe: 
 
 1. sos.dll needs to be in the path for windbg in order to load it
 2. you can .load %full path to sos.dll% instead of .load sos mscorwks or other statements
