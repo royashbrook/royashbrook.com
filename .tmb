@@ -1,5 +1,5 @@
-# cite map for royashbrook.com posts.
-# lets cite (the skill) link Roy's own projects + known externals to the RIGHT public url instead of
+# trustmebro map for royashbrook.com posts.
+# lets trustmebro (the skill) link Roy's own projects + known externals to the RIGHT public url instead of
 # guessing or flagging them as unsourceable (a cold agent can't know "hush" = royashbrook/hush).
 # format: name = owner/repo   # site / notes
 
@@ -8,7 +8,7 @@ hush = royashbrook/hush
 sql-spider = royashbrook/sql-spider
 lifescored = royashbrook/lifescored        # site: https://lifescored.com
 blame = blame-today/blame-web              # site: https://blame.today
-cite = royashbrook/cite                        # https://github.com/royashbrook/cite
+trustmebro = royashbrook/trustmebro            # https://github.com/royashbrook/trustmebro
 
 # externals Roy references (NOT his , cite them honestly, never as his own)
 graphify = safishamsi/graphify            # open-source knowledge-graph tool sql-spider can output to
