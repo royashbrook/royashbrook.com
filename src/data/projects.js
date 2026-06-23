@@ -1,6 +1,19 @@
-// single source for projects, used by the home teaser + /projects + /llms.txt.
+// projects, used by the home teaser + /projects + /llms.txt.
+// the `royashbrook-tool` repos auto-populate (single source = the github topic), each with its repo,
+// skill, and royashbrook.com/<name> mcp endpoint. sites/apps + other-org projects are hand-listed.
 // links rendered in order: site, repo, skill, mcp (only the ones present show).
-export const projects = [
+import { tools as registry } from './tools.js';
+
+const toolProjects = registry.map((t) => ({
+  name: t.name,
+  desc: t.desc,
+  repo: t.repo,
+  skill: t.skill,
+  mcp: t.mcp,
+}));
+
+// not in Roy's tool topic (sites/apps, other orgs) , hand-curated.
+const other = [
   {
     name: 'blame.today',
     desc: 'anonymous public blame board. pick who or what you blame today and watch the tally. no account, every vote is a throwaway key on nostr.',
@@ -18,24 +31,14 @@ export const projects = [
     mcp: 'https://lifescored.com/mcp',
   },
   {
-    name: 'sql-spider',
-    desc: 'builds a deterministic, closed dependency graph of a sql database (tables, views, procs, functions, triggers) by emitting read-only queries. point an agent at it or run it yourself.',
-    repo: 'https://github.com/royashbrook/sql-spider',
-    skill: 'https://github.com/royashbrook/sql-spider/blob/main/SKILL.md',
-  },
-  {
-    name: 'hush',
-    desc: 'a secret store for ai agents whose one rule is the agent never sees the plaintext. store a credential once in your os keychain, then inject it into the tools you already use, never printed, never committed. mac, linux, and windows.',
-    repo: 'https://github.com/royashbrook/hush',
-    skill: 'https://github.com/royashbrook/hush/blob/main/SKILL.md',
-  },
-  {
     name: 'neveraway',
     desc: "keeps you from showing 'away' in chat apps.",
     site: 'https://neveraway.github.io',
     repo: 'https://github.com/neveraway/neveraway',
   },
 ];
+
+export const projects = [...toolProjects, ...other];
 
 // the link types in display order, for the card meta + llms.txt.
 export const projectLinkOrder = ['site', 'repo', 'skill', 'mcp'];

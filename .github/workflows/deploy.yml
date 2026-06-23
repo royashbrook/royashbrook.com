@@ -2,12 +2,16 @@ name: deploy
 
 # build the astro site + ship it to cloudflare workers (static assets) on every push to main.
 # infra/** has its own workflow (tofu/dns), so skip changes that only touch it.
+# also runs daily: the build reads the `royashbrook-tool` github topic, so a newly-tagged tool shows
+# up on /projects + /agents + /llms.txt within a day even with no push.
 # needs repo secret CLOUDFLARE_API_TOKEN (an "Edit Cloudflare Workers" token; distinct from the
 # zone-scoped TF_CLOUDFLARE_API_TOKEN). account id is in wrangler.jsonc (not a secret).
 on:
   push:
     branches: [main]
     paths-ignore: ["infra/**"]
+  schedule:
+    - cron: "17 9 * * *"
   workflow_dispatch:
 
 concurrency:

@@ -1,22 +1,23 @@
-// single source for the "for ai agents" shelf, used by /agents + /llms.txt.
-// each tool is tagged by `type` so a reader (human or agent) can tell skill from mcp.
-// type: 'skill' = drop-in agent skill (clone, nothing hosted)
-//       'mcp'   = remote mcp server (an endpoint an agent connects to)
-export const tools = [
-  {
-    name: 'sql-spider',
-    type: 'skill',
-    desc: 'a drop-in agent skill that builds a deterministic, closed dependency graph of a sql database by emitting read-only queries. the agent is the adapter, so no live db connection is needed. (no mcp, it is just a skill that rides on top of another skill.)',
-    use: 'clone into .claude/skills/',
-    links: [{ label: 'repo', url: 'https://github.com/royashbrook/sql-spider' }],
-  },
-  {
-    name: 'hush',
-    type: 'skill',
-    desc: 'a secret store for ai agents with one hard rule: the agent never sees the plaintext. an agent gets a value once into the os keychain (a hidden paste dialog, or it mints a random one), then injects it into the clis you already use, never printed, never in the chat, never committed. mac, linux, and windows backends built in.',
-    use: 'clone into .claude/skills/',
-    links: [{ label: 'repo', url: 'https://github.com/royashbrook/hush' }],
-  },
+// the "for ai agents" shelf, used by /agents + /llms.txt.
+// the `royashbrook-tool` repos auto-populate here (single source = the github topic): each is a skill
+// that ALSO exposes a discovery MCP at royashbrook.com/<name>. tools not in Roy's topic (a different
+// org, etc.) are hand-listed below.
+// type: 'skill' = drop-in agent skill (clone) | 'mcp' = remote mcp server (an endpoint).
+import { tools as registry } from './tools.js';
+
+const auto = registry.map((t) => ({
+  name: t.name,
+  type: 'skill',
+  desc: t.desc,
+  use: 'clone into .claude/skills/, or connect the mcp endpoint',
+  links: [
+    { label: 'mcp', url: t.mcp },
+    { label: 'repo', url: t.repo },
+  ],
+}));
+
+// not in Roy's topic (different org) , curated by hand.
+const extra = [
   {
     name: 'blame-mcp',
     type: 'mcp',
@@ -28,3 +29,5 @@ export const tools = [
     ],
   },
 ];
+
+export const tools = [...auto, ...extra];
