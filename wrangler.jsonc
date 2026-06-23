@@ -1,13 +1,16 @@
 {
   // royashbrook.com on cloudflare workers static assets (matches roy's other projects).
-  // pure static: astro builds to ./dist, served as assets, no worker script needed.
+  // astro builds to ./dist, served as assets. a small worker (worker/index.js) adds per-tool MCP
+  // endpoints at /<toolname> (repos tagged `royashbrook-tool`) and falls through to assets otherwise.
   // deploy: pushed to main -> .github/workflows/deploy.yml builds + deploys. or locally:
   // `npm run build && npx wrangler deploy` (validate syntax via the wrangler skill at deploy time).
   "name": "royashbrook",
   // account id is not a secret; inlining it lets CI (and local) deploy without an account picker.
   "account_id": "b13c1cf2483bdad430b91ae25126e984",
   "compatibility_date": "2026-06-15",
+  "main": "worker/index.js",
   "assets": {
-    "directory": "./dist"
+    "directory": "./dist",
+    "binding": "ASSETS"
   }
 }
