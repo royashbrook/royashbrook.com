@@ -7,9 +7,9 @@ draft: true
 
 if you let an [ai agent](https://en.wikipedia.org/wiki/Intelligent_agent) run as you, it can already do almost anything. your [clis](https://en.wikipedia.org/wiki/Command-line_interface) are already logged in, so it can set a secret on a server, call an api, push a deploy, whatever. there's really only one thing it *can't* safely do: see a secret.
 
-that's the whole problem hush solves, and it's the only thing it does. one rule, and it's a hard one: **the agent never sees the [plaintext](https://en.wikipedia.org/wiki/Plaintext).**
+that's the whole problem hush solves. **hush is a tool for your ai agents**, and it does one thing, with one hard rule: **the agent never sees the [plaintext](https://en.wikipedia.org/wiki/Plaintext).**
 
-the code's open and MIT: [github.com/royashbrook/hush](https://github.com/royashbrook/hush), or just `npx @royashbrook/hush`.
+it's open and MIT, and there are three ways in: clone the repo at [github.com/royashbrook/hush](https://github.com/royashbrook/hush), grab it from [npm](https://www.npmjs.com/package/@royashbrook/hush) with `npx @royashbrook/hush`, or point an agent at the [mcp endpoint](https://royashbrook.com/hush).
 
 # the "go paste this token somewhere" dance
 
