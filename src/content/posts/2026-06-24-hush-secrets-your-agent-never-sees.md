@@ -5,15 +5,15 @@ path: "2026/06/24/hush-secrets-your-agent-never-sees"
 draft: true
 ---
 
-if you let an ai agent run as you, it can already do almost anything. your [clis](https://en.wikipedia.org/wiki/Command-line_interface) are already logged in, so it can set a secret on a server, call an api, push a deploy, whatever. there's really only one thing it *can't* safely do: see a secret.
+if you let an [ai agent](https://en.wikipedia.org/wiki/Intelligent_agent) run as you, it can already do almost anything. your [clis](https://en.wikipedia.org/wiki/Command-line_interface) are already logged in, so it can set a secret on a server, call an api, push a deploy, whatever. there's really only one thing it *can't* safely do: see a secret.
 
-that's the whole problem hush solves, and it's the only thing it does. one rule, and it's a hard one: **the agent never sees the plaintext.**
+that's the whole problem hush solves, and it's the only thing it does. one rule, and it's a hard one: **the agent never sees the [plaintext](https://en.wikipedia.org/wiki/Plaintext).**
 
 the code's open and MIT: [github.com/royashbrook/hush](https://github.com/royashbrook/hush), or just `npx @royashbrook/hush`.
 
 # the "go paste this token somewhere" dance
 
-here's the situation that bugged me. i'm working with an agent and it's doing real things as me. at some point it needs a credential , a vendor api key, a token, a signing secret. and every option for getting that secret into play is bad:
+here's the situation that bugged me. i'm working with an agent and it's doing real things as me. at some point it needs a [credential](https://en.wikipedia.org/wiki/Credential) , a vendor api key, a token, a signing secret. and every option for getting that secret into play is bad:
 
 - paste it into the chat. now it's in the transcript forever, probably in a log somewhere, maybe synced to a cloud. a secret that's been in a chat window is a burned secret.
 - drop it in a `.env` file. now it's plaintext on disk waiting to get committed by accident, and the agent can read it whenever it wants.
@@ -46,7 +46,7 @@ and then , this is the part i like , i used it again for real today while publis
 
 # it's not a vault
 
-i want to be honest about what this is and isn't. hush is **not** a lock against a hostile process. an agent with shell access can obviously use the store , that's the whole point, it's *for* the agent. what it does is keep plaintext out of the conversation and make "store it once, inject it everywhere" the easy, default path instead of the paste-into-chat path.
+i want to be honest about what this is and isn't. hush is **not** a lock against a hostile process. an agent with [shell](https://en.wikipedia.org/wiki/Shell_%28computing%29) access can obviously use the store , that's the whole point, it's *for* the agent. what it does is keep plaintext out of the conversation and make "store it once, inject it everywhere" the easy, default path instead of the paste-into-chat path.
 
 it's also only as durable as the machine it's on. it's a local keychain, not a hosted manager. so it's a great backstop and on-ramp, but don't make hush the only copy of a secret you can't regenerate , back the machine up, or sync it onward into a real secret manager.
 
