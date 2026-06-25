@@ -5,7 +5,7 @@ path: "2026/06/24/hush-secrets-your-agent-never-sees"
 draft: true
 ---
 
-if you let an ai agent run as you, it can already do almost anything. your clis are already logged in, so it can set a secret on a server, call an api, push a deploy, whatever. there's really only one thing it *can't* safely do: see a secret.
+if you let an ai agent run as you, it can already do almost anything. your [clis](https://en.wikipedia.org/wiki/Command-line_interface) are already logged in, so it can set a secret on a server, call an api, push a deploy, whatever. there's really only one thing it *can't* safely do: see a secret.
 
 that's the whole problem hush solves, and it's the only thing it does. one rule, and it's a hard one: **the agent never sees the plaintext.**
 
@@ -25,11 +25,11 @@ so hush is just the missing piece: get a secret in once, then inject it into com
 
 # how it works
 
-there's deliberately no `get`. a plain getter is the leak , the moment you can read a value back out, it's going to end up printed somewhere. so hush only has the verbs that don't require the agent to see anything:
+there's deliberately no `get`. a plain [getter](https://en.wikipedia.org/wiki/Mutator_method) is the leak , the moment you can read a value back out, it's going to end up printed somewhere. so hush only has the verbs that don't require the agent to see anything:
 
-- `set` , the agent runs this and a little paste box pops up on *your* screen. you paste the value, it goes straight into your os keychain, and the agent never sees it. it just knows the name now.
-- `mint` , for a secret that only needs to be strong and random (an operator key, a webhook signing secret), the agent generates it and stores it itself. nobody ever types it.
-- `run` / `pipe` , inject the stored value into a command. `run` puts it in the env, `pipe` sends it to stdin. either way it goes keychain → the command, never to the screen.
+- `set` , the agent runs this and a little paste box pops up on *your* screen. you paste the value, it goes straight into your os [keychain](https://en.wikipedia.org/wiki/Keychain_%28software%29), and the agent never sees it. it just knows the name now.
+- `mint` , for a secret that only needs to be strong and random (an operator key, a [webhook](https://en.wikipedia.org/wiki/Webhook) signing secret), the agent generates it and stores it itself. nobody ever types it.
+- `run` / `pipe` , inject the stored value into a command. `run` puts it in the [env](https://en.wikipedia.org/wiki/Environment_variable), `pipe` sends it to [stdin](https://en.wikipedia.org/wiki/Standard_streams). either way it goes keychain → the command, never to the screen.
 - `list` , names only, never values.
 
 so a normal flow is: the agent runs `hush set my-vendor-key`, you paste it, then it does `hush pipe my-vendor-key -- wrangler secret put MY_VENDOR_KEY` and the value lands in your [cloudflare worker](https://developers.cloudflare.com/workers/) without ever being in the chat. or `hush mint operator-key` and then `hush run KEY=operator-key -- ./some-tool`.
