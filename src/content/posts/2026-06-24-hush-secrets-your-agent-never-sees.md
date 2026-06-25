@@ -32,9 +32,9 @@ there's deliberately no `get`. a plain getter is the leak , the moment you can r
 - `run` / `pipe` , inject the stored value into a command. `run` puts it in the env, `pipe` sends it to stdin. either way it goes keychain → the command, never to the screen.
 - `list` , names only, never values.
 
-so a normal flow is: the agent runs `hush set my-vendor-key`, you paste it, then it does `hush pipe my-vendor-key -- wrangler secret put MY_VENDOR_KEY` and the value lands in your cloudflare worker without ever being in the chat. or `hush mint operator-key` and then `hush run KEY=operator-key -- ./some-tool`.
+so a normal flow is: the agent runs `hush set my-vendor-key`, you paste it, then it does `hush pipe my-vendor-key -- wrangler secret put MY_VENDOR_KEY` and the value lands in your [cloudflare worker](https://developers.cloudflare.com/workers/) without ever being in the chat. or `hush mint operator-key` and then `hush run KEY=operator-key -- ./some-tool`.
 
-mac, linux, and windows all work , it just rides each one's built-in secret store (keychain, libsecret, dpapi).
+mac, linux, and windows all work , it just rides each one's built-in secret store (keychain, [libsecret](https://gnome.pages.gitlab.gnome.org/libsecret/), [dpapi](https://en.wikipedia.org/wiki/Data_Protection_API)).
 
 # it proved itself on someone else's agent
 
@@ -54,6 +54,6 @@ it's also only as durable as the machine it's on. it's a local keychain, not a h
 
 - `npx @royashbrook/hush`, or `npm i -g @royashbrook/hush` for the `hush` command
 - or clone it: [github.com/royashbrook/hush](https://github.com/royashbrook/hush)
-- it's an agent skill, so you can also just point your agent at [royashbrook.com/hush](https://royashbrook.com/hush) , there's a little mcp endpoint there that hands it the whole playbook
+- it's an agent skill, so you can also just point your agent at [royashbrook.com/hush](https://royashbrook.com/hush) , there's a little [mcp](https://modelcontextprotocol.io) endpoint there that hands it the whole playbook
 
 that's the whole idea: your agent can keep doing everything it does as you, minus the one bad habit of needing to see your secrets to use them.
