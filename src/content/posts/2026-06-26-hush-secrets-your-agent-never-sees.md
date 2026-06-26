@@ -2,7 +2,7 @@
 title: "hush: secrets your ai agent never sees"
 date: 2026-06-26
 path: "2026/06/26/hush-secrets-your-agent-never-sees"
-draft: true
+draft: false
 ---
 
 if you let an [ai agent](https://en.wikipedia.org/wiki/Intelligent_agent) run as you, it can already do almost anything. your [clis](https://en.wikipedia.org/wiki/Command-line_interface) are already logged in, so it can set a secret on a server, call an api, push a deploy, whatever. there's really only one thing it *can't* safely do: see a secret.
@@ -39,13 +39,15 @@ if you're curious what it's actually doing under the hood (you don't have to car
 
 mac, linux, and windows all work , it just rides each one's built-in secret store (keychain, [libsecret](https://gnome.pages.gitlab.gnome.org/libsecret/), [dpapi](https://en.wikipedia.org/wiki/Data_Protection_API)).
 
-# it proved itself on someone else's agent
+# how i used it, aka dogfooding
 
 my personal use case of this was validated the most when I started using cold agents use it.
 
 i pointed a fresh agent, working on a completely different project, at the hush repo and basically said "use this skill." it installed itself from the url, read the docs, and then , on its own , walked right into the exact case hush is for: it needed a rotated api key it wasn't allowed to see. so it ran `hush set`, the paste box popped on my screen, i dropped the new key in, and it piped that straight into the deployed worker and confirmed it worked. the key it had just used was never printed, never in the transcript, never on disk. that's the entire loop, driven by an agent that had never heard of the tool ten minutes earlier.
 
 since then, i use it all the time while publishing stuff. i needed a cloudflare token in a github secret, and instead of pasting it anywhere, the agent piped it from hush straight into `gh secret set`. the token did its job and i never saw it. dogfood complete.
+
+now, i basically use it constantly. so why not share.
 
 # it's not a vault
 
