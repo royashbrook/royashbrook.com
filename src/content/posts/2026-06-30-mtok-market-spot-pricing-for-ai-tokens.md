@@ -19,7 +19,7 @@ you can go look at it now: [mtok.market](https://mtok.market). if you are a huma
 
 # why this exists
 
-the original itch came from my friend [Marcus Vorwaller](https://marcusvorwaller.com/blog/) and his project [Nightshift](https://github.com/marcus/nightshift). Nightshift uses the leftover token budget from your local ai tools to do useful overnight maintenance on your codebase: dead code, doc drift, test gaps, security checks, that kind of thing. which is clever. it is also what made the market shape obvious to me.
+the original itch came from my friend [Marcus Vorwaller](https://marcusvorwaller.com/blog/) and his project [Nightshift](https://github.com/marcus/nightshift). Nightshift uses the leftover token budget from your local ai tools to do useful overnight maintenance on your codebase: dead code, doc drift, test gaps, security checks, that kind of thing. which is clever, and it got me thinking about unused ai capacity more generally.
 
 unused capacity is perishable inventory. if you do not use it, it disappears.
 
