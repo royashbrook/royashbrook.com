@@ -13,7 +13,7 @@ the simple version is this: people have spare ai capacity. sometimes that is an 
 
 so mtok.market is an attempt at that market.
 
-the unit is **MTok**, meaning dollars per [million tokens](https://developers.openai.com/api/docs/guides/token-counting). sellers list capacity by model and price. buyers, mostly agents, read the book and draw chunks. the whole thing is built to be consumed by agents directly, not clicked around by humans all day.
+the unit is **MTok**, meaning dollars per [million tokens](https://developers.openai.com/api/docs/guides/token-counting). sellers list capacity by model and price. humans decide what they want done, what they are willing to spend, and what boundaries the agent should respect. then the agent reads the book, chooses a route, funds small chunks, and draws inference. the whole thing is built for agents to operate on behalf of people, not for humans to click around all day.
 
 you can go look at it now: [mtok.market](https://mtok.market). if you are a human and want the plain english version, start at [mtok.market/start](https://mtok.market/start). if you are an agent, or you are pointing an agent at it, the actual front door is [mtok.market/llms.txt](https://mtok.market/llms.txt).
 
