@@ -126,6 +126,10 @@ third, tiny payments are finally cheap enough to be interesting again. a prepaid
 
 fourth, the trust model has to move from "the platform promises" to "the system leaves evidence." a public ledger, on-chain payments, delivered-volume reputation, and spot prices based on real deliveries are all attempts to make the market explain itself. the market does not need to be the only possible route between a buyer and seller. it needs to make discovery, pricing, and evidence useful enough that staying in the venue is worth the small fee.
 
+this is not a hypothetical design preference. there is a live example of the other path: [ERC-8004](https://eips.ethereum.org/EIPS/eip-8004), an agent reputation registry with over a hundred thousand registered agents, got studied this summer and [the study](https://arxiv.org/abs/2606.26028) found most reviewers were sybils and the feedback rarely connected to a verifiable transaction. reputation that is not anchored to real payments is free to fake, so it gets faked. reputation here is derived from paid on-chain draws and buyer affirmations, so faking it costs real money every time.
+
+and the venue holds itself to the same standard. stats, reputation, and spot are computed from the public contract events on Base, and the api tells you which block it is indexed to. you do not have to trust the venue's database. you can rebuild the same numbers from the chain yourself, and if the venue disappeared tomorrow the record would still be there.
+
 # what it is not
 
 it is not a bank.
