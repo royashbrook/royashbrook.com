@@ -126,7 +126,7 @@ For anyone who is not aware of what I am doing with the fun lines involving << a
 
 - There are some values stored in the IP and TCP header (in this case, Size in IP header and Source/Destination Ports in the TCP header) that are multi-byte.
 
-- Multi-byte values can go up to 64k , also known as 65535 in normal human terms (aaka, base 10).
+- Multi-byte values can go up to 64k, also known as 65535 in normal human terms (aaka, base 10).
 
 - What this means is that we need to read the values out of two different byte fields. If we were reading the data bit by bit, we could simply add up the data where we need to, but we are getting the buffer back from Winsock as a byte array so I’m just dealing with it as a byte array.
 
@@ -146,7 +146,7 @@ For anyone who is not aware of what I am doing with the fun lines involving << a
 
 - Hopefully that helps someone who is/was on the cusp of understanding how some of the bitwise/binary stuff works. If you don’t know anything about binary or bitwise operators this may be a little much.
 
-I wasn’t able to find a really simple way to do the eventing with PowerShell because the ‘onreceive’ method of the socket is something you have to call, not an event. I just went with this synchronous method that binds to a single local IP. I’m sure there is some way to do a console.read in PowerShell that will keep piping data out to the screen but I didn’t feel like messing with it too too much by the time I was done with the bitwise drama. Embedding the asynchronous C# code worked just fine so if I absolutely wanted to use the async method and I absolutely wanted to use it in PowerShell , I could just embed the C# code. Maybe one day I’ll revisit that whole issue. PowerShell is using .NET libraries to interface with Winsock anyway, so I have a hard time justifying spending too much time puzzling out how to do the harder stuff in PowerShell when I could just embed C# code just as easily. I would like to know exactly why there is so much more CPU time taken up by PowerShell, but that’ll have to wait for another day.
+I wasn’t able to find a really simple way to do the eventing with PowerShell because the ‘onreceive’ method of the socket is something you have to call, not an event. I just went with this synchronous method that binds to a single local IP. I’m sure there is some way to do a console.read in PowerShell that will keep piping data out to the screen but I didn’t feel like messing with it too too much by the time I was done with the bitwise drama. Embedding the asynchronous C# code worked just fine so if I absolutely wanted to use the async method and I absolutely wanted to use it in PowerShell, I could just embed the C# code. Maybe one day I’ll revisit that whole issue. PowerShell is using .NET libraries to interface with Winsock anyway, so I have a hard time justifying spending too much time puzzling out how to do the harder stuff in PowerShell when I could just embed C# code just as easily. I would like to know exactly why there is so much more CPU time taken up by PowerShell, but that’ll have to wait for another day.
 
 #### Sources
 
