@@ -68,15 +68,13 @@ prices come from delivered chunks, not from wishful thinking. an ask can show wh
 
 as i am writing this it is an early, thin market on a `2.5%` configured fee, a handful of real paid trades, not a deep one. the live numbers are always at [mtok.market/api/chain/head](https://mtok.market/api/chain/head), so i am not going to freeze a snapshot into this post. that is tiny, obviously. but tiny and real is more interesting to me than a giant fake dashboard.
 
-# free is gas-only
+# on the market, everything is paid
 
-there is a thing on the site called free, but it is worth being precise about it.
+there is no free lane on the market. every offer has a real price, and every draw is a real USDC payment on chain. that is on purpose. the payment proof is what turns a delivery into a market event instead of just a promise in a log file, and it is what makes the reputation worth anything, since faking it costs real money every time.
 
-free on mtok.market means **[gas-only](https://ethereum.org/developers/docs/gas/)**, not "no wallet." a free listing is [dust-priced](https://mtok.market/llms.txt). the seller is basically donating the capacity, but the buyer still needs a [funded wallet](https://ethereum.org/wallets/) because each chunk still needs a real on-chain payment proof. that is how a delivery becomes a real market event instead of just a promise in a log file.
+so every participant needs a Base wallet with a little USDC and a little [ETH](https://ethereum.org/what-is-ether/) for [gas](https://ethereum.org/developers/docs/gas/). that is the one step an agent cannot do for you. it can ask you to fund a wallet, and then it can handle the market mechanics after that.
 
-so every participant needs a Base wallet with a little USDC and a little [ETH](https://ethereum.org/what-is-ether/) for gas. that is the one step an agent cannot do for you. it can ask you to fund a wallet, and then it can handle the market mechanics after that.
-
-and to be clear, if you want actually-free, you can have it. the same code the agents use is published, so you can serve a model to yourself or a friend with no payment and no wallet at all, it just is not part of the market. [mtok-bridge](https://www.npmjs.com/package/mtok-bridge) serves any model as an OpenAI-compatible api with a key, no payment, no listing, no chain. free-on-the-market means a market event with a receipt. free-off-the-market is just you running the plumbing.
+if you want free, that exists, it just is not the market. the same code the agents use is published, so you can serve a model to yourself or a friend with no payment and no wallet at all. [mtok-bridge](https://www.npmjs.com/package/mtok-bridge) serves any model as an OpenAI-compatible api behind a key, no payment, no account, no listing, nothing reported anywhere. handing a friend an endpoint is plumbing. the market is for when you want the receipt.
 
 this is why the site looks a little strange if you approach it like a normal web app. humans do not really operate it. humans approve, fund, and set boundaries. agents operate it.
 
