@@ -1,8 +1,8 @@
 ---
 title: "mtok.market: spot pricing for ai tokens"
-date: 2026-06-30
-path: "2026/06/30/mtok-market-spot-pricing-for-ai-tokens"
-draft: true
+date: 2026-07-08
+path: "2026/07/08/mtok-market-spot-pricing-for-ai-tokens"
+draft: false
 ---
 
 [mtok.market](https://mtok.market) is a [spot market](https://en.wikipedia.org/wiki/Spot_market) for [ai inference](https://www.ibm.com/think/topics/ai-inference) tokens.
@@ -60,9 +60,9 @@ the loop is pretty small.
 
 the important detail is that the buyer does not need to prepay for the whole theoretical job. the route can be funded in small chunks as it goes. that keeps the buyer's risk small, gives the seller a reason to deliver cleanly, and makes a bad route something you can stop using instead of a giant mistake you have to unwind.
 
-prices come from delivered chunks, not from wishful thinking. an ask can show what a seller is offering, but the spot price is based on recent deliveries. the [trade tape](https://www.investor.gov/introduction-investing/investing-basics/glossary/consolidated-tape) is actual metered usage. there is also a [public ledger](https://en.wikipedia.org/wiki/Ledger) head at [mtok.market/api/ledger/head](https://mtok.market/api/ledger/head), and the verification recipe is in [llms.txt](https://mtok.market/llms.txt), because "trust me bro" is not really the ideal market data model.
+prices come from delivered chunks, not from wishful thinking. an ask can show what a seller is offering, but the spot price is based on recent deliveries. the [trade tape](https://www.investor.gov/introduction-investing/investing-basics/glossary/consolidated-tape) is actual metered usage. there is also a [public ledger](https://en.wikipedia.org/wiki/Ledger) head at [mtok.market/api/chain/head](https://mtok.market/api/chain/head), and the verification recipe is in [llms.txt](https://mtok.market/llms.txt), because "trust me bro" is not really the ideal market data model.
 
-as i am writing this, the public stats endpoint is showing `$13.50` of volume, `27` trades, `26` usage events, and a `2.5%` configured fee. that is tiny, obviously. this is an early market, not a deep one. but tiny and real is more interesting to me than a giant fake dashboard.
+as i am writing this it is an early, thin market on a `2.5%` configured fee, a handful of real paid trades, not a deep one. the live numbers are always at [mtok.market/api/chain/head](https://mtok.market/api/chain/head), so i am not going to freeze a snapshot into this post. that is tiny, obviously. but tiny and real is more interesting to me than a giant fake dashboard.
 
 # free is gas-only
 
@@ -126,7 +126,7 @@ third, tiny payments are finally cheap enough to be interesting again. a prepaid
 
 fourth, the trust model has to move from "the platform promises" to "the system leaves evidence." a public ledger, on-chain payments, delivered-volume reputation, and spot prices based on real deliveries are all attempts to make the market explain itself. the market does not need to be the only possible route between a buyer and seller. it needs to make discovery, pricing, and evidence useful enough that staying in the venue is worth the small fee.
 
-this is not a hypothetical design preference. there is a live example of the other path: [ERC-8004](https://eips.ethereum.org/EIPS/eip-8004), an agent reputation registry with over a hundred thousand registered agents, got studied this summer and [the study](https://arxiv.org/abs/2606.26028) found most reviewers were sybils and the feedback rarely connected to a verifiable transaction. reputation that is not anchored to real payments is free to fake, so it gets faked. reputation here is derived from paid on-chain draws and buyer affirmations, so faking it costs real money every time.
+this is not a hypothetical design preference. there is a live example of the other path: [ERC-8004](https://eips.ethereum.org/EIPS/eip-8004), an agent reputation registry with over 170,000 registered agents, got studied this summer and [the study](https://arxiv.org/abs/2606.26028) found most reviewers were sybils and the feedback rarely connected to a verifiable transaction. reputation that is not anchored to real payments is free to fake, so it gets faked. reputation here is derived from paid on-chain draws and buyer affirmations, so faking it costs real money every time.
 
 and the venue holds itself to the same standard. stats, reputation, and spot are computed from the public contract events on Base, and the api tells you which block it is indexed to. you do not have to trust the venue's database. you can rebuild the same numbers from the chain yourself, and if the venue disappeared tomorrow the record would still be there.
 
