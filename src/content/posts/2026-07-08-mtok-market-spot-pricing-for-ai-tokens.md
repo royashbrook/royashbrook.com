@@ -19,7 +19,7 @@ you can go look at it now: [mtok.market](https://mtok.market). if you are a huma
 
 # why this exists
 
-the original itch came from my friend [Marcus Vorwaller](https://marcusvorwaller.com/blog/) and his project [Nightshift](https://github.com/marcus/nightshift). Nightshift uses the leftover token budget from your local ai tools to do useful overnight maintenance on your codebase: dead code, doc drift, test gaps, security checks, that kind of thing. which is clever, and it got me thinking about unused ai capacity more generally.
+the original itch came from [a friend](https://marcusvorwaller.com/) and his project [Nightshift](https://github.com/marcus/nightshift). Nightshift uses the leftover token budget from your local ai tools to do useful overnight maintenance on your codebase: dead code, doc drift, test gaps, security checks, that kind of thing. which is clever, and it got me thinking about unused ai capacity more generally.
 
 unused capacity is perishable inventory. if you do not use it, it disappears.
 
@@ -58,6 +58,10 @@ the loop is pretty small.
 5. the delivery is metered, reported, and recorded.
 6. the buyer affirms a good delivery or disputes a bad one.
 
+here is the same loop the way the site draws it:
+
+<img src="/assets/images/mtok-transaction-flow.svg" alt="sequence diagram of one mtok.market transaction: seller lists a signed offer, buyer asks the market for a route, buyer pays the draw on base, sends proof to the seller, seller verifies DrawPaid on chain and delivers tokens, buyer affirms on chain, market reads the events" style="background:#f2f6f2;border-radius:8px;padding:16px;width:100%;max-width:850px" />
+
 the important detail is that the buyer does not need to prepay for the whole theoretical job. the route can be funded in small chunks as it goes. that keeps the buyer's risk small, gives the seller a reason to deliver cleanly, and makes a bad route something you can stop using instead of a giant mistake you have to unwind.
 
 prices come from delivered chunks, not from wishful thinking. an ask can show what a seller is offering, but the spot price is based on recent deliveries. the [trade tape](https://www.investor.gov/introduction-investing/investing-basics/glossary/consolidated-tape) is actual metered usage. there is also a [public ledger](https://en.wikipedia.org/wiki/Ledger) head at [mtok.market/api/chain/head](https://mtok.market/api/chain/head), and the verification recipe is in [llms.txt](https://mtok.market/llms.txt), because "trust me bro" is not really the ideal market data model.
@@ -72,6 +76,8 @@ free on mtok.market means **[gas-only](https://ethereum.org/developers/docs/gas/
 
 so every participant needs a Base wallet with a little USDC and a little [ETH](https://ethereum.org/what-is-ether/) for gas. that is the one step an agent cannot do for you. it can ask you to fund a wallet, and then it can handle the market mechanics after that.
 
+and to be clear, if you want actually-free, you can have it. the same code the agents use is published, so you can serve a model to yourself or a friend with no payment and no wallet at all, it just is not part of the market. [mtok-bridge](https://www.npmjs.com/package/mtok-bridge) serves any model as an OpenAI-compatible api with a key, no payment, no listing, no chain. free-on-the-market means a market event with a receipt. free-off-the-market is just you running the plumbing.
+
 this is why the site looks a little strange if you approach it like a normal web app. humans do not really operate it. humans approve, fund, and set boundaries. agents operate it.
 
 # the site is for agents first
@@ -85,8 +91,10 @@ but the real product surface is the agent surface:
 - [llms.txt](https://mtok.market/llms.txt), the dense agent manual
 - [openapi.json](https://mtok.market/openapi.json), the api contract
 - [mcp](https://mtok.market/mcp), the tool endpoint for clients that speak [MCP](https://modelcontextprotocol.io/docs/getting-started/intro)
-- [client.mjs](https://mtok.market/client.mjs) and [sdk.mjs](https://mtok.market/sdk.mjs), the small client surfaces
+- the components themselves, on [npm](https://www.npmjs.com/) and open source: [mtok-sdk](https://www.npmjs.com/package/mtok-sdk) is the buyer side (identity, wallet, pay-however-the-market-asks), [mtok-relay](https://www.npmjs.com/package/mtok-relay) is the seller relay, and [mtok-bridge](https://www.npmjs.com/package/mtok-bridge) is the bare transport core with no market in it at all
 - [sell-local.md](https://mtok.market/sell-local.md), the raw seller runbook
+
+could an agent skip the packages and talk to the api raw? sure, the contract is right there. but the packages are the advertised path, and because they are open source, anyone can read exactly what their agent is agreeing to before it spends a cent. same goes for the money layer: the [MtokDripLedger contract is public on Base](https://basescan.org/address/0x745ee2cbcce03424902092c8d71698825f7bb7be), so the whole machine is inspectable end to end.
 
 that is the part i keep finding interesting lately. a website used to be mostly for a person with eyes and a mouse. now, for a certain kind of tool, the website is also a manual that another program reads so it can do the work for you.
 
@@ -100,7 +108,9 @@ the easy version of this would have been a central gateway. sellers give the pla
 
 that is easier in some ways, but it creates the exact pile of problems i wanted to avoid. now the platform is holding secrets. now it is holding customer money. now it needs withdrawal flows, account recovery, abuse controls around a central proxy, and a much bigger trust story.
 
-mtok.market is deliberately more primitive than that. it is closer to a venue:
+i know because that is what i built first. the original version was exactly that gateway, and somewhere along the way i realized i did not actually want it. i do not want to hold your keys. i do not want to hold your funds. i want the agents to be able to do all of that themselves. once you push everything out to the edges, the only pieces you cannot really distribute are the reputation and a place to list things, and honestly you could probably do even those distributed with something like [nostr](https://en.wikipedia.org/wiki/Nostr). i built a venue instead because the trust structure for buyers and sellers, plus having an actual price, seemed like a convenient value add for someone who wants to dip a toe in. and if you do not want to pay the market at all, the plumbing is published, you can hand someone an api key and go direct with no market in the way.
+
+so mtok.market is deliberately more primitive than the gateway version. it is closer to a venue:
 
 - sellers host delivery
 - buyers pay sellers directly
