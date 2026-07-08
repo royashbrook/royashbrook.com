@@ -7,9 +7,7 @@ draft: false
 
 [mtok.market](https://mtok.market) is a [spot market](https://en.wikipedia.org/wiki/Spot_market) for [ai inference](https://www.ibm.com/think/topics/ai-inference) tokens.
 
-that sentence is weird enough that it probably needs a minute.
-
-the simple version is this: people have spare ai capacity. sometimes that is an idle local model. sometimes it is a [gpu](https://en.wikipedia.org/wiki/Graphics_processing_unit) box that sits quiet most of the day. sometimes it is provider capacity they are allowed to route. on the other side, [agents](https://en.wikipedia.org/wiki/Intelligent_agent) need bursts of inference. they do not necessarily need a new subscription, a human signup flow, or a credit card. they need to look at a market, find a price, pay for a small chunk, run the job, and move on.
+that sentence sounds like a bunch of fun ai jargon. so let me explain a bit. the simple version is this: people have spare ai capacity. sometimes that is an idle local model. sometimes it is a [gpu](https://en.wikipedia.org/wiki/Graphics_processing_unit) box that sits quiet most of the day. sometimes it is provider capacity they are allowed to route. on the other side, [agents](https://en.wikipedia.org/wiki/Intelligent_agent) need bursts of inference. they do not necessarily need a new subscription, a human signup flow, or a credit card. they need to look at a market, find a price, pay for a small chunk, run the job, and move on.
 
 so mtok.market is an attempt at that market.
 
@@ -19,27 +17,17 @@ you can go look at it now: [mtok.market](https://mtok.market). if you are a huma
 
 # why this exists
 
-the original itch came from [a friend](https://marcusvorwaller.com/) and his project [Nightshift](https://github.com/marcus/nightshift). Nightshift uses the leftover token budget from your local ai tools to do useful overnight maintenance on your codebase: dead code, doc drift, test gaps, security checks, that kind of thing. which is clever, and it got me thinking about unused ai capacity more generally.
+the original itch came from [a friend](https://marcusvorwaller.com/) of mine and his project [nightshift](https://github.com/marcus/nightshift). nightshift uses the leftover token budget from your local ai tools to do useful overnight maintenance on your codebase: dead code, doc drift, test gaps, security checks, that kind of thing. clever solution to a common problem. it got me thinking about unused ai capacity more generally.
 
-unused capacity is perishable inventory. if you do not use it, it disappears.
+unused tokens are use it or lose it. that is exactly the shape spot markets are good at. hotel rooms tonight. empty seats on a plane. spare compute. capacity that is worth less, or zero, later. same for ai tokens. if you are the buyer, you don't really care whose idle capacity served a [batch classification](https://en.wikipedia.org/wiki/Statistical_classification) job, a [summarization](https://en.wikipedia.org/wiki/Automatic_summarization) pass, or some extraction task, as long as the model is good enough, the price is right, and the seller actually delivers. the seller would rather get something than nothing for capacity that was going to sit there anyway.
 
-that is exactly the shape spot markets are good at. hotel rooms tonight. empty seats on a plane. spare compute. capacity that is worth less later than it is right now.
+i also thought it would be great if an agent could do all the work. if you are a person, much easier if you can just task your agent to go and get the tokens you need, and use them for some other tasks. we already do similar things locally if you have a subscription anyway to offload tasks to 'cheaper' models. so why not have an agent that can do this with any model. act as a steward of your tokens and buy and sell them period.
 
-ai tokens have the same basic smell. the buyer does not necessarily care whose idle capacity served a [batch classification](https://en.wikipedia.org/wiki/Statistical_classification) job, a [summarization](https://en.wikipedia.org/wiki/Automatic_summarization) pass, or some extraction task, as long as the model is good enough, the price is right, and the seller actually delivers. the seller would rather get something than nothing for capacity that was going to sit there anyway.
-
-so the market asks a pretty direct question:
-
-what if an agent could buy a little inference the same way software already buys a little compute?
-
-the version of this i keep coming back to is not just buyer and seller. it is an agent acting as a steward of token cost. it can buy cheap capacity when it needs it, use local or self-hosted capacity when that makes more sense, and maybe sell surplus when it would otherwise sit idle. that is the shape that felt worth making real enough to poke.
-
-not by opening a billing portal. not by making the human create another account. not by storing a giant prepaid balance inside some new platform. just read the book, pick a route, pay the seller, get the tokens.
+i couldn't find anything like this when i started working on it, so i made one.
 
 # the important architecture choice
 
-the thing i did not want to build was another [proxy](https://en.wikipedia.org/wiki/Proxy_server) that holds everyone's keys and money.
-
-mtok.market is **seller-hosted** and **[non-custodial](https://ethereum.org/wallets/find-wallet/)**. those are not marketing words here, they are the whole architecture.
+the thing i did not want to build was another [proxy](https://en.wikipedia.org/wiki/Proxy_server) that holds everyone's keys and money. i wanted things to be more p2p and public, not going 'through me' instead going from buyer to seller directly. so... mtok.market is **seller-hosted** and **[non-custodial](https://ethereum.org/wallets/find-wallet/)**. these sound like marketing speak, i think, but really they are the whole architecture.
 
 seller-hosted means the seller runs the [relay](https://mtok.market/sell-local.md). the seller owns whatever is behind it: a local model, an [api key](https://en.wikipedia.org/wiki/API_key), a provider bridge, whatever they are allowed to share or sell. the platform never sees the upstream key, and it does not proxy your prompt through some central inference server. a buyer draws against the seller's relay.
 
@@ -49,10 +37,10 @@ that makes the product a little sharper around the edges, because there is no re
 
 # how a trade works
 
-the loop is pretty small.
+the loop is pretty small. in the example below, buyer and seller are meant to be an ai agent.
 
 1. a seller posts an offer for a model at an input and output price per MTok.
-2. a buyer's agent reads the market and finds a route.
+2. a buyer reads the market and finds a route.
 3. the buyer opens a short-lived prepaid balance by sending a small on-chain payment directly to the seller.
 4. the buyer draws inference chunks from the seller's relay.
 5. the delivery is metered, reported, and recorded.
@@ -74,17 +62,13 @@ there is no free lane on the market. every offer has a real price, and every dra
 
 so every participant needs a Base wallet with a little USDC and a little [ETH](https://ethereum.org/what-is-ether/) for [gas](https://ethereum.org/developers/docs/gas/). that is the one step an agent cannot do for you. it can ask you to fund a wallet, and then it can handle the market mechanics after that.
 
-if you want free, that exists, it just is not the market. the same code the agents use is published, so you can serve a model to yourself or a friend with no payment and no wallet at all. [mtok-bridge](https://www.npmjs.com/package/mtok-bridge) serves any model as an OpenAI-compatible api behind a key, no payment, no account, no listing, nothing reported anywhere. handing a friend an endpoint is plumbing. the market is for when you want the receipt.
-
-this is why the site looks a little strange if you approach it like a normal web app. humans do not really operate it. humans approve, fund, and set boundaries. agents operate it.
+if you want free, that exists, it just is not the market. the same code the agents use is published, so you can serve a model to yourself or a friend with no payment and no wallet at all. [mtok-bridge](https://www.npmjs.com/package/mtok-bridge) serves any model as an OpenAI-compatible api behind a key, no payment, no account, no listing, nothing reported anywhere. handing a friend an endpoint is plumbing. the market is for when you want the receipt. honestly, you can just tell an agent to do this thing, and i have found it can build all of this on the fly for you. but, i already wrote it, so why not share it.
 
 # the site is for agents first
 
-one of the stranger parts of building this was realizing that the most important page is not the pretty page.
+the market dashboard exists because humans still need to look at something. they need to understand whether it is alive, what the prices are, what the trade tape says, and whether the whole thing feels trustworthy enough to hand to an agent. but, in an ideal world you would just point your agent at the site and ask them to use it, tell you what it does, etc.
 
-the market dashboard exists because humans still need to look at something. they need to understand whether it is alive, what the prices are, what the trade tape says, and whether the whole thing feels trustworthy enough to hand to an agent.
-
-but the real product surface is the agent surface:
+so the real product surface is the agent surface:
 
 - [llms.txt](https://mtok.market/llms.txt), the dense agent manual
 - [openapi.json](https://mtok.market/openapi.json), the api contract
@@ -94,11 +78,11 @@ but the real product surface is the agent surface:
 
 could an agent skip the packages and talk to the api raw? sure, the contract is right there. but the packages are the advertised path, and because they are open source, anyone can read exactly what their agent is agreeing to before it spends a cent. same goes for the money layer: the [MtokDripLedger contract is public on Base](https://basescan.org/address/0x745ee2cbcce03424902092c8d71698825f7bb7be), so the whole machine is inspectable end to end.
 
-that is the part i keep finding interesting lately. a website used to be mostly for a person with eyes and a mouse. now, for a certain kind of tool, the website is also a manual that another program reads so it can do the work for you.
+for me, this was an interesting finding from this and my other recent projects that have to do with ai. a website used to be mostly for a person to see and click around. now, for a certain kind of tool, the website is also a manual that another program reads so it can do the work for that person. they may never even really need to see it.
 
 mtok.market leans all the way into that. the human page basically says: you do not use this page, your agent does. paste this prompt to buy tokens, or paste this prompt to share capacity. if your agent supports MCP, just give it the endpoint.
 
-that feels weird, but it is also probably closer to where a lot of developer tools are going.
+a little weird, but probably closer to where a lot of developer tools are going.
 
 # why this is not just another api reseller
 
@@ -136,27 +120,23 @@ fourth, the trust model has to move from "the platform promises" to "the system 
 
 this is not a hypothetical design preference. there is a live example of the other path: [ERC-8004](https://eips.ethereum.org/EIPS/eip-8004), an agent reputation registry with over 170,000 registered agents, got studied this summer and [the study](https://arxiv.org/abs/2606.26028) found most reviewers were sybils and the feedback rarely connected to a verifiable transaction. reputation that is not anchored to real payments is free to fake, so it gets faked. reputation here is derived from paid on-chain draws and buyer affirmations, so faking it costs real money every time.
 
-and the venue holds itself to the same standard. stats, reputation, and spot are computed from the public contract events on Base, and the api tells you which block it is indexed to. you do not have to trust the venue's database. you can rebuild the same numbers from the chain yourself, and if the venue disappeared tomorrow the record would still be there.
+and the venue holds itself to the same standard. stats, reputation, and spot are computed from the public contract events on Base, and the api tells you which block it is indexed to. you do not have to trust the venue's database. you can rebuild the same numbers from the chain yourself, and if the venue disappeared tomorrow the record would still be there. a troll with a big account can still do something, but it takes a long time and we all know what the retail cost of tokens are anyway.
 
 # what it is not
 
-it is not a bank.
-
-it is not a promise that every seller is safe.
-
-it is not a claim that every model or provider can legally be resold by whoever lists it.
-
-it is not a giant liquid market yet.
-
-it is not a claim that every route will be fast.
-
-it is not trying to hide the weird parts.
+mtok.market is not:
+- a bank
+- a promise that every seller is safe.
+- a claim that every model or provider can legally be resold by whoever lists it.
+- a giant liquid market yet.
+- a claim that every route will be fast.
+- trying to hide the weird parts.
 
 it is a working prototype of an agent-first spot market for inference capacity. the current version is meant to be small enough to reason about and real enough to test the core loop.
 
 # try it
 
-if you are just curious, go to [mtok.market/start](https://mtok.market/start). that page is the plain english explanation and the least weird entry point.
+if you are just curious, go to [mtok.market/start](https://mtok.market/start). that page is the plain english explanation and the best entry point for humans.
 
 if you want to point an agent at it, give it this:
 
