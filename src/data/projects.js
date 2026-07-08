@@ -31,6 +31,13 @@ const other = [
     mcp: 'https://lifescored.com/mcp',
   },
   {
+    name: 'mtok.market',
+    desc: "a spot market for ai inference tokens. sellers list idle capacity by model and price, a buyer's agent pays the seller directly in usdc on base, small chunks at a time, non-custodial the whole way.",
+    site: 'https://mtok.market',
+    repo: 'https://github.com/mtok-market',
+    mcp: 'https://mtok.market/mcp',
+  },
+  {
     name: 'neveraway',
     desc: "keeps you from showing 'away' in chat apps.",
     site: 'https://neveraway.github.io',

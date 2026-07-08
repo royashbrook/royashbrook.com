@@ -19,6 +19,16 @@ const auto = registry.map((t) => ({
 // not in Roy's topic (different org) , curated by hand.
 const extra = [
   {
+    name: 'mtok.market',
+    type: 'mcp',
+    desc: 'a spot market for ai inference tokens. an agent reads the manual, finds a price, pays the seller small chunks in usdc on base, and draws inference. llms.txt is the front door.',
+    use: 'connect an agent to the endpoint, or point it at https://mtok.market/llms.txt',
+    links: [
+      { label: 'endpoint', url: 'https://mtok.market/mcp' },
+      { label: 'llms.txt', url: 'https://mtok.market/llms.txt' },
+    ],
+  },
+  {
     name: 'blame-mcp',
     type: 'mcp',
     desc: 'a remote mcp server that teaches any ai agent the recipe to blame things on blame.today. thin on purpose, it hands back a recipe, not actions, so it can not be abused.',
