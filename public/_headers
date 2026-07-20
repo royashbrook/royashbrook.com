@@ -1,3 +1,8 @@
+# the game's service worker must not be edge/browser-cached, so a new SW version is discovered
+# promptly and updates reach returning players (the SW itself is network-first).
+/craftrush/sw.js
+  Cache-Control: no-store
+
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin

@@ -1,5 +1,8 @@
 node_modules/
 dist/
+# craftrush game is pulled fresh from its own repo at build time (scripts/pull-craftrush.mjs)
+public/craftrush/
+.craftrush-tmp/
 .astro/
 .DS_Store
 .wrangler/
