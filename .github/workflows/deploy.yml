@@ -13,6 +13,10 @@ on:
   schedule:
     - cron: "17 9 * * *"
   workflow_dispatch:
+  # the craftrush game repo dispatches this on its own push-to-main so a game update redeploys the
+  # site (which re-pulls craftrush) immediately, not on the next site push / the daily cron.
+  repository_dispatch:
+    types: [craftrush-update]
 
 concurrency:
   group: deploy
