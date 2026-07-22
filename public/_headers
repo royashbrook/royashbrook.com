@@ -1,6 +1,8 @@
-# the game's service worker must not be edge/browser-cached, so a new SW version is discovered
-# promptly and updates reach returning players (the SW itself is network-first).
-/craftrush/sw.js
+# the game must not be edge/browser-cached. it's a self-versioning PWA served on stable URLs, so a
+# cached config.js/js/index.html makes a deploy's new version + code lag behind (CF edge-serves stale
+# HITs even with must-revalidate). no-store keeps every online load current; offline is unaffected
+# because the service worker precaches into the Cache API, which no-store does not govern.
+/craftrush/*
   Cache-Control: no-store
 
 /*
