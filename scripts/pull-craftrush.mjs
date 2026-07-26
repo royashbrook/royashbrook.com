@@ -1,9 +1,15 @@
 // prebuild: pull the craftrush game and BUILD it into public/craftrush/, so `astro build` ships the
-// built output at royashbrook.com/craftrush. craftrush is a built project (tools/build.mjs generates
-// dist/ with a version stamped from git tags + an auto-generated, content-hashed service worker), so
-// we clone it (FULL, its version derivation needs tags + history), run its build, and copy dist/,
+// built output at royashbrook.com/craftrush. craftrush is a built project whose build stamps a
+// version from git tags and generates a service worker, so we clone it (FULL, no --depth: the
+// version derivation needs tags + history), install, run ITS build script, and copy the output,
 // NOT the raw repo root. the craftrush repo stays the source of truth; this is refetched every build
 // (and by the daily cron deploy), so a push to craftrush main shows up on the next site build.
+//
+// deliberately runs `npm ci` + `npm run build` rather than naming craftrush's build tool here: that
+// game moved from a hand-rolled builder writing dist/ to sveltekit writing build/, and this script
+// silently shipped the site WITHOUT the game for the gap in between, because the failure path below
+// is soft. asking the repo what its build is, and taking whichever output directory it produces,
+// means a toolchain change over there cannot quietly delete the game from here again.
 //
 // fails SOFT: a transient clone/build failure warns + continues (the site still deploys) rather than
 // break the whole site over a fun kids' game.
@@ -22,15 +28,24 @@ rmSync(tmp, { recursive: true, force: true });
 try {
   // FULL clone (no --depth): the build derives the version from git tags + commit count.
   execSync(`git clone --branch ${BRANCH} ${REPO} "${tmp}"`, { stdio: 'inherit' });
-  execSync('node tools/build.mjs', { cwd: tmp, stdio: 'inherit' });
+  // the game's build needs its devDependencies (vite, sveltekit). skip playwright's
+  // browser download: this build runs the game's build, never its tests.
+  execSync('npm ci', {
+    cwd: tmp,
+    stdio: 'inherit',
+    env: { ...process.env, PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1' },
+  });
+  execSync('npm run build', { cwd: tmp, stdio: 'inherit' });
 } catch (e) {
   console.warn(`WARN: craftrush pull/build failed (${e.message}); shipping this build without /craftrush.`);
   rmSync(tmp, { recursive: true, force: true });
   process.exit(0);
 }
-const built = join(tmp, 'dist');
-if (!existsSync(built)) {
-  console.warn('WARN: craftrush build produced no dist/; shipping this build without /craftrush.');
+// whichever directory its build writes: sveltekit uses build/, the older hand-rolled builder
+// used dist/. checked in that order so a repo containing both stale dirs still picks the current one.
+const built = ['build', 'dist'].map((d) => join(tmp, d)).find((d) => existsSync(d));
+if (!built) {
+  console.warn('WARN: craftrush build produced no build/ or dist/; shipping this build without /craftrush.');
   rmSync(tmp, { recursive: true, force: true });
   process.exit(0);
 }
@@ -40,4 +55,4 @@ for (const name of readdirSync(built)) {
   cpSync(join(built, name), join(dest, name), { recursive: true });
 }
 rmSync(tmp, { recursive: true, force: true });
-console.log('built + pulled craftrush dist -> public/craftrush/');
+console.log(`built + pulled craftrush ${built.split('/').pop()}/ -> public/craftrush/`);
