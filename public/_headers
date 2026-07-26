@@ -5,10 +5,24 @@
 /craftrush/*
   Cache-Control: no-store
 
-# same for quarkatamari: a self-versioning PWA on stable URLs, so a cached shell/bundle would serve a
-# stale build after a deploy. Its /assets/* are content-hashed, but the shell + sw must stay fresh.
-/quarkatamari/*
+# Quarkatamari's stable shell/PWA metadata must revalidate on every online load.
+/quarkatamari
   Cache-Control: no-store
+/quarkatamari/
+  Cache-Control: no-store
+/quarkatamari/index.html
+  Cache-Control: no-store
+/quarkatamari/service-worker.js
+  Cache-Control: no-cache
+/quarkatamari/manifest.webmanifest
+  Cache-Control: no-cache
+/quarkatamari/_app/version.json
+  Cache-Control: no-cache
+
+# SvelteKit fingerprints immutable bundles. Browser caching also prevents the service worker's
+# install-time cache.addAll from downloading a chunk the page just fetched.
+/quarkatamari/_app/immutable/*
+  Cache-Control: public, max-age=31536000, immutable
 
 /*
   X-Content-Type-Options: nosniff
