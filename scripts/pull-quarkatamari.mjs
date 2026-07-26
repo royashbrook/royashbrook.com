@@ -1,47 +1,54 @@
 // prebuild: pull the quarkatamari game and BUILD it into public/quarkatamari/, so `astro build` ships
-// it at royashbrook.com/quarkatamari. Same shape as pull-craftrush.mjs (the game repo stays the source
-// of truth, refetched every build), with two differences forced by this game's stack:
+// it at royashbrook.com/quarkatamari. The game repo stays the source of truth and is refetched every
+// build. V1 needs its old root-path rewrite; V2's SvelteKit artifact is already subpath-safe and must
+// be copied byte-for-byte because its filenames are content hashes.
 //
-//  1. it's a Next static export (vinext) whose artifact is dist/client/, not the repo root.
-//  2. Next's `basePath` can't be used: vinext's export DROPS index.html when it's set. So we build
-//     root-relative and rewrite the built absolute paths (/assets, /icon-*, /favicon, /manifest) to
-//     the subpath here. The PWA bits (sw registration, sw precache, manifest) are already ./-relative
-//     in the game repo, so they need no rewriting, only these root-absolute build outputs do.
+// QUARKATAMARI_REF lets the game-owned deploy workflow pin the exact verified main commit. Scheduled
+// site builds default to current main and run the repository's own verification before copying it.
 //
 // version: major.minor from the latest git tag, patch = commits since it (same rule as craftrush),
 // stamped into the shipped index.html as a meta tag so the deployed build is identifiable.
 //
-// fails SOFT: a clone/build failure warns + continues (the site still deploys) rather than break the
-// whole site over a game.
 import { execSync, execFileSync } from 'node:child_process';
 import { rmSync, mkdirSync, cpSync, readdirSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 const REPO = 'https://github.com/royashbrook/quarkatamari.git';
-const BRANCH = 'main';
+const REF = process.env.QUARKATAMARI_REF || 'main';
 const SUBPATH = '/quarkatamari';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dest = join(root, 'public', 'quarkatamari');
 const tmp = join(root, '.quarkatamari-tmp');
 
 rmSync(tmp, { recursive: true, force: true });
-try {
-  // FULL clone (no --depth): the version derives from git tags + commit count.
-  execSync(`git clone --branch ${BRANCH} ${REPO} "${tmp}"`, { stdio: 'inherit' });
-  execSync('npm ci --no-audit --no-fund', { cwd: tmp, stdio: 'inherit' });
-  execSync('npm run build', { cwd: tmp, stdio: 'inherit' });
-} catch (e) {
-  console.warn(`WARN: quarkatamari pull/build failed (${e.message}); shipping without /quarkatamari.`);
-  rmSync(tmp, { recursive: true, force: true });
-  process.exit(0);
+// FULL clone (no --depth): the version derives from git tags + commit count.
+execFileSync('git', ['clone', REPO, tmp], { stdio: 'inherit' });
+execFileSync('git', ['fetch', 'origin', REF], { cwd: tmp, stdio: 'inherit' });
+execFileSync('git', ['checkout', '--detach', 'FETCH_HEAD'], { cwd: tmp, stdio: 'inherit' });
+execSync('npm ci --no-audit --no-fund', { cwd: tmp, stdio: 'inherit' });
+
+const gamePackage = JSON.parse(readFileSync(join(tmp, 'package.json'), 'utf8'));
+if (gamePackage.scripts?.['test:all']) {
+  if (process.env.CI) {
+    execSync('npx playwright install --with-deps chromium', { cwd: tmp, stdio: 'inherit' });
+    execSync('npm run test:all', { cwd: tmp, stdio: 'inherit' });
+  } else {
+    for (const command of ['npm run check', 'npm test', 'npm run build', 'npm run test:artifact']) {
+      execSync(command, { cwd: tmp, stdio: 'inherit' });
+    }
+  }
+} else {
+  // Keep the companion change safe while the current v1 artifact is still on main.
+  execSync('npm test', { cwd: tmp, stdio: 'inherit' });
 }
+
 const built = join(tmp, 'dist', 'client');
 if (!existsSync(join(built, 'index.html'))) {
-  console.warn('WARN: quarkatamari build produced no dist/client/index.html; shipping without it.');
-  rmSync(tmp, { recursive: true, force: true });
-  process.exit(0);
+  throw new Error('quarkatamari build produced no dist/client/index.html');
 }
+const v2Artifact = readFileSync(join(built, 'index.html'), 'utf8')
+  .includes('data-release="v2-sveltekit"');
 
 // version: <latest tag major.minor>.<commits since tag>
 const git = (args) => {
@@ -89,11 +96,15 @@ const walk = (dir) => {
     if (after !== before) writeFileSync(p, after);
   }
 };
-walk(dest);
+if (!v2Artifact) walk(dest);
 
-// stamp the version so the deployed build is identifiable from the page itself
+// stamp the version and immutable source identity into the shipped shell
 const idx = join(dest, 'index.html');
-writeFileSync(idx, readFileSync(idx, 'utf8').replace(/<head>/i, `<head><meta name="app-version" content="${version}">`));
+const commit = git(['rev-parse', 'HEAD']);
+writeFileSync(idx, readFileSync(idx, 'utf8').replace(
+  /<head>/i,
+  `<head><meta name="app-version" content="${version}"><meta name="app-commit" content="${commit}">`,
+));
 
 rmSync(tmp, { recursive: true, force: true });
-console.log(`built + pulled quarkatamari ${version} -> public/quarkatamari/`);
+console.log(`built + pulled quarkatamari ${version} (${commit}) -> public/quarkatamari/`);
