@@ -71,10 +71,14 @@ for (const name of readdirSync(built)) {
 // that start with a slash and point at this build's own top-level artifacts, so it can't rewrite an
 // external URL (those start with a scheme) or an already-prefixed path.
 const OWN = ['assets', 'icon-192.png', 'icon-512.png', 'favicon.svg', 'manifest.webmanifest', 'sw.js'];
-const rewrite = (s) =>
-  OWN.reduce((acc, name) => acc.split(`"/${name}`).join(`"${SUBPATH}/${name}`)
-                               .split(`'/${name}`).join(`'${SUBPATH}/${name}`)
-                               .split(`(/${name}`).join(`(${SUBPATH}/${name}`), s);
+const rewrite = (s) => {
+  const ownPaths = OWN.reduce((acc, name) => acc.split(`"/${name}`).join(`"${SUBPATH}/${name}`)
+                                            .split(`'/${name}`).join(`'${SUBPATH}/${name}`)
+                                            .split(`(/${name}`).join(`(${SUBPATH}/${name}`), s);
+  // Vite's generated preload helper builds lazy chunk and CSS URLs as `"/" + dependency`. It has no
+  // literal `/assets` for the path rewrite above to catch, so preserve the hosting subpath here too.
+  return ownPaths.replace(/return`\/`\+([A-Za-z_$][\w$]*)/g, `return\`${SUBPATH}/\`+$1`);
+};
 const walk = (dir) => {
   for (const name of readdirSync(dir, { withFileTypes: true })) {
     const p = join(dir, name.name);
