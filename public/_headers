@@ -5,6 +5,11 @@
 /craftrush/*
   Cache-Control: no-store
 
+# same for quarkatamari: a self-versioning PWA on stable URLs, so a cached shell/bundle would serve a
+# stale build after a deploy. Its /assets/* are content-hashed, but the shell + sw must stay fresh.
+/quarkatamari/*
+  Cache-Control: no-store
+
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin

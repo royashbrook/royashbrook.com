@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "prebuild": "node scripts/pull-craftrush.mjs",
+    "prebuild": "node scripts/pull-craftrush.mjs && node scripts/pull-quarkatamari.mjs",
     "build": "astro build",
     "preview": "astro preview"
   },
