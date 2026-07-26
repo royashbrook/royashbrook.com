@@ -6,6 +6,12 @@ name: deploy
 # up on /projects + /agents + /llms.txt within a day even with no push.
 # needs repo secret CLOUDFLARE_API_TOKEN (an "Edit Cloudflare Workers" token; distinct from the
 # zone-scoped TF_CLOUDFLARE_API_TOKEN). account id is in wrangler.jsonc (not a secret).
+#
+# GOTCHA, prebuild pulls other repos (scripts/pull-*.mjs clone + build the games): this job has NO
+# github credential for OTHER repos, so a pulled repo must be PUBLIC or its clone fails and the
+# script skips it (fails soft, the site still deploys, the game just goes missing). To pull a PRIVATE
+# repo you'd have to add a fine-grained PAT (contents:read on that repo) as a secret and use it in the
+# clone URL. Symptom to look for in this log: "WARN: <game> pull/build failed ... shipping without".
 on:
   push:
     branches: [main]
