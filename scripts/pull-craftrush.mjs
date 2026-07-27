@@ -18,6 +18,26 @@ import { rmSync, mkdirSync, cpSync, readdirSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
+/**
+ * Give up on the game, but say so loudly.
+ *
+ * Failing soft is right: a broken game must not take the whole site down. But a
+ * one-line warning in a thousand-line build log is how /craftrush could vanish
+ * and nobody notice for a week. So this is deliberately impossible to skim past,
+ * and it names what to do about it.
+ */
+function missing(why) {
+  const line = '='.repeat(72);
+  console.warn(`\n${line}`);
+  console.warn('  /craftrush WILL BE MISSING FROM THIS DEPLOY');
+  console.warn(`  reason: ${why}`);
+  console.warn('  the site still ships, on purpose: a broken game should not break the site.');
+  console.warn('  fix: check that craftrush main builds with `npm ci && npm run build`.');
+  console.warn(`${line}\n`);
+  rmSync(tmp, { recursive: true, force: true });
+  process.exit(0);
+}
+
 const REPO = 'https://github.com/royashbrook/craftrush.git';
 const BRANCH = 'main';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -37,18 +57,12 @@ try {
   });
   execSync('npm run build', { cwd: tmp, stdio: 'inherit' });
 } catch (e) {
-  console.warn(`WARN: craftrush pull/build failed (${e.message}); shipping this build without /craftrush.`);
-  rmSync(tmp, { recursive: true, force: true });
-  process.exit(0);
+  missing(`the clone or build failed: ${e.message}`);
 }
 // whichever directory its build writes: sveltekit uses build/, the older hand-rolled builder
 // used dist/. checked in that order so a repo containing both stale dirs still picks the current one.
 const built = ['build', 'dist'].map((d) => join(tmp, d)).find((d) => existsSync(d));
-if (!built) {
-  console.warn('WARN: craftrush build produced no build/ or dist/; shipping this build without /craftrush.');
-  rmSync(tmp, { recursive: true, force: true });
-  process.exit(0);
-}
+if (!built) missing('the build produced no build/ or dist/');
 rmSync(dest, { recursive: true, force: true });
 mkdirSync(dest, { recursive: true });
 for (const name of readdirSync(built)) {
