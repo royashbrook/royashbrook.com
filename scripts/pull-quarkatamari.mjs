@@ -31,7 +31,9 @@ execSync('npm ci --no-audit --no-fund', { cwd: tmp, stdio: 'inherit' });
 const gamePackage = JSON.parse(readFileSync(join(tmp, 'package.json'), 'utf8'));
 if (gamePackage.scripts?.['test:all']) {
   if (process.env.CI) {
-    execSync('npx playwright install --with-deps chromium', { cwd: tmp, stdio: 'inherit' });
+    // Match the projects declared by the game. Quarkatamari keeps its full
+    // renderer suite on Chromium and runs recovery smoke coverage on WebKit.
+    execSync('npx playwright install --with-deps chromium webkit', { cwd: tmp, stdio: 'inherit' });
     execSync('npm run test:all', { cwd: tmp, stdio: 'inherit' });
   } else {
     for (const command of ['npm run check', 'npm test', 'npm run build', 'npm run test:artifact']) {
