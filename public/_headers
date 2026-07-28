@@ -1,8 +1,12 @@
-# the game must not be edge/browser-cached. it's a self-versioning PWA served on stable URLs, so a
-# cached config.js/js/index.html makes a deploy's new version + code lag behind (CF edge-serves stale
-# HITs even with must-revalidate). no-store keeps every online load current; offline is unaffected
-# because the service worker precaches into the Cache API, which no-store does not govern.
-/craftrush/*
+# craft rush moved to craftrush.royashbrook.com, and what is left here is the handover page that
+# carries a player's save across to it. that page must never be cached: a returning player getting a
+# stale copy is one that either sends them nowhere or, worse, replays a handover that already ran.
+# it stays indefinitely, because someone opening an old bookmark next year should still be carried.
+/craftrush
+  Cache-Control: no-store
+/craftrush/
+  Cache-Control: no-store
+/craftrush/index.html
   Cache-Control: no-store
 
 # Quarkatamari's stable shell/PWA metadata must revalidate on every online load.
