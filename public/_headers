@@ -9,15 +9,19 @@
 /craftrush/index.html
   Cache-Control: no-store
 
-# quantamari moved to quantamari.royashbrook.com, and what is left here is the handover page that
-# carries a player's save across to it. same reasoning as /craftrush above: a returning player must
-# never get a cached copy, which would either send them nowhere or replay a handoff that already ran.
+# quantamari moved to quantamari.royashbrook.com. this old-path redirect and its worker tombstones
+# must never become stale: returning players should always reach the current home, while retirement
+# cleanup remains scoped to quantamari's own old worker and caches.
 /quarkatamari
   Cache-Control: no-store
 /quarkatamari/
   Cache-Control: no-store
 /quarkatamari/index.html
   Cache-Control: no-store
+/quarkatamari/service-worker.js
+  Cache-Control: no-cache
+/quarkatamari/sw.js
+  Cache-Control: no-cache
 
 /*
   X-Content-Type-Options: nosniff

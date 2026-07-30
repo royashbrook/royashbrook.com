@@ -3,7 +3,11 @@ dist/
 # games are pulled + built fresh from their own repos at build time (scripts/pull-*.mjs)
 public/craftrush/
 .craftrush-tmp/
-public/quarkatamari/
+# Quantamari moved, but its two former worker URLs remain as tracked retirement
+# files so existing PWA registrations can update and unregister themselves.
+public/quarkatamari/*
+!public/quarkatamari/service-worker.js
+!public/quarkatamari/sw.js
 .quarkatamari-tmp/
 .astro/
 .DS_Store

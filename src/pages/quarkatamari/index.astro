@@ -1,24 +1,6 @@
 ---
-// The handover page for the game's move to quantamari.royashbrook.com.
-//
-// WHY A PAGE AND NOT A 301. A redirect would move everyone and strand their save.
-// Progress lives in localStorage, which is scoped to an ORIGIN, and a different
-// hostname is a different origin. Nothing reads across that line any more: the old
-// hidden-iframe handoff is dead, because Safari's ITP and Chrome's storage
-// partitioning each hand a third-party frame its own empty box. The only mechanism
-// left is a FIRST-PARTY read, which is what this page is: it runs on the OLD origin,
-// reads its own storage, and passes the bytes along in a URL fragment.
-//
-// A fragment rather than a query string, because fragments are never sent to a
-// server, so nobody's save ends up in a log.
-//
-// The saves are opaque strings under `everything-roll-*` keys, so this carries them
-// verbatim and makes no attempt to understand them. Nothing here can corrupt a save,
-// because nothing here parses one.
-//
-// Standalone on purpose: no site layout, no shared CSS, no analytics beacon. It stays
-// until the traffic stops rather than for a fixed window, because someone opening an
-// old bookmark next year should still be carried across.
+// Quantamari now has its own origin. No save migration is needed for this
+// cutover, so the old path only retires its own PWA state and moves.
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -27,6 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#07041d" />
 <meta name="robots" content="noindex" />
+<meta http-equiv="refresh" content="2; url=https://quantamari.royashbrook.com/" />
 <link rel="canonical" href="https://quantamari.royashbrook.com/" />
 <title>Quantamari has moved</title>
 <style>
@@ -37,7 +20,6 @@
   .box { max-width: 430px; }
   h1 { font-size: 18px; letter-spacing: 1px; margin: 0 0 12px; color: #8fd6ff; }
   p { font-size: 14px; margin: 0 0 14px; }
-  .dim { color: #9a92ad; font-size: 12px; }
   a.go { display: inline-block; font-weight: 700; text-decoration: none;
     padding: 12px 18px; background: #3b2f88; color: #fff; border: 2px solid #000; }
 </style>
@@ -45,84 +27,59 @@
 <body>
 <div class="box">
   <h1>QUANTAMARI HAS A NEW HOME</h1>
-  <p id="msg">Taking you there, and bringing your game with you&hellip;</p>
-  <p><a class="go" id="go" href="https://quantamari.royashbrook.com/">GO TO QUANTAMARI</a></p>
-  <p class="dim" id="note"></p>
+  <p>Taking you to quantamari.royashbrook.com&hellip;</p>
+  <p><a class="go" href="https://quantamari.royashbrook.com/">GO TO QUANTAMARI</a></p>
 </div>
 
 <script is:inline>
-/*
-  Inline, dependency free, defensive at every step. Every failure path ends the same
-  way: send them to the new address anyway, and leave the old save exactly where it is.
-  Nothing here deletes a save.
-*/
 (function () {
   var NEW_ORIGIN = 'https://quantamari.royashbrook.com/';
-  var PREFIX = 'everything-roll-';
-  // about what a URL fragment carries safely across browsers. a truncated payload
-  // would be worse than none, so oversize falls back to a plain move.
-  var MAX_PAYLOAD = 60000;
 
-  var msg = document.getElementById('msg');
-  var note = document.getElementById('note');
-  var go = document.getElementById('go');
+  function retireLegacyApp() {
+    var workerCleanup = Promise.resolve();
+    var cacheCleanup = Promise.resolve();
 
-  function b64url(str) {
-    return btoa(unescape(encodeURIComponent(str)))
-      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-  }
-
-  /*
-    Retire the old service worker before leaving. It is registered at this path, so
-    left alone it keeps answering here and a returning player could be served the
-    cached game instead of this page. Unregistering discards only CACHED FILES, which
-    are re-downloadable; saves live in localStorage and none of this touches them.
-  */
-  function retireWorker() {
     try {
-      if (!('serviceWorker' in navigator)) return Promise.resolve();
-      return navigator.serviceWorker.getRegistrations().then(function (regs) {
-        return Promise.all(regs.map(function (r) { return r.unregister(); }));
-      }).then(function () {
-        if (!window.caches || !caches.keys) return null;
-        return caches.keys().then(function (keys) {
-          return Promise.all(keys.map(function (k) { return caches.delete(k); }));
+      if ('serviceWorker' in navigator) {
+        workerCleanup = navigator.serviceWorker.getRegistrations().then(function (regs) {
+          return Promise.all(regs.filter(function (registration) {
+            try {
+              var path = new URL(registration.scope).pathname;
+              return path === '/quarkatamari/' || path.indexOf('/quarkatamari/') === 0;
+            } catch (e) {
+              return false;
+            }
+          }).map(function (registration) {
+            return registration.unregister();
+          }));
         });
-      }).catch(function () { /* best effort, never a blocker */ });
-    } catch (e) { return Promise.resolve(); }
-  }
-
-  var url = NEW_ORIGIN;
-  var carried = false;
-  var hadSave = false;
-  try {
-    var payload = {};
-    for (var i = 0; i < localStorage.length; i++) {
-      var k = localStorage.key(i);
-      if (k && k.indexOf(PREFIX) === 0) { payload[k] = localStorage.getItem(k); hadSave = true; }
-    }
-    if (hadSave) {
-      var frag = b64url(JSON.stringify(payload));
-      if (frag.length <= MAX_PAYLOAD) {
-        url = NEW_ORIGIN + '#qm-migrate=' + frag;
-        carried = true;
       }
-    }
-  } catch (e) { /* fall through to a plain move */ }
+    } catch (e) { /* best effort */ }
 
-  go.href = url;
-  if (carried) {
-    note.textContent = 'Your collection and journey progress are coming with you.';
-  } else if (hadSave) {
-    msg.textContent = 'Quantamari now lives at quantamari.royashbrook.com';
-    note.textContent = 'This save is too large to carry in a link. Use the rescue page here to copy '
-      + 'it out, then restore it at the new address.';
-  } else {
-    msg.textContent = 'Quantamari now lives at quantamari.royashbrook.com';
+    try {
+      if (window.caches && caches.keys) {
+        cacheCleanup = caches.keys().then(function (keys) {
+          return Promise.all(keys.filter(function (key) {
+            return key.indexOf('quarkatamari-') === 0;
+          }).map(function (key) {
+            return caches.delete(key);
+          }));
+        });
+      }
+    } catch (e) { /* best effort */ }
+
+    return Promise.all([workerCleanup, cacheCleanup]).catch(function () {
+      // Cleanup must never block the move.
+    });
   }
 
-  retireWorker().then(function () {
-    setTimeout(function () { location.replace(url); }, carried ? 900 : 1500);
+  var fallback = setTimeout(function () {
+    location.replace(NEW_ORIGIN);
+  }, 1500);
+
+  retireLegacyApp().then(function () {
+    clearTimeout(fallback);
+    location.replace(NEW_ORIGIN);
   });
 })();
 </script>
