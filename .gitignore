@@ -1,7 +1,10 @@
 node_modules/
 dist/
-# games are pulled + built fresh from their own repos at build time (scripts/pull-*.mjs)
-public/craftrush/
+# Quantamari is still pulled and built from its own repo on this branch. Craft
+# Rush moved, but its two former worker URLs remain as tracked retirement files.
+public/craftrush/*
+!public/craftrush/service-worker.js
+!public/craftrush/sw.js
 .craftrush-tmp/
 public/quarkatamari/
 .quarkatamari-tmp/

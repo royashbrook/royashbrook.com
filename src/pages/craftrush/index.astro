@@ -41,12 +41,29 @@
   .dim { color: #9a92ad; font-size: 12px; }
   a.go { display: inline-block; font-weight: 700; text-decoration: none;
     padding: 12px 18px; background: #4a8f2f; color: #fff; border: 2px solid #000; }
+  .recovery { margin: 18px 0; padding: 14px; border: 1px solid #51495e;
+    background: #211d29; text-align: left; }
+  .recovery p { font-size: 12px; }
+  textarea { box-sizing: border-box; width: 100%; min-height: 110px; resize: vertical;
+    margin: 0 0 10px; padding: 8px; border: 1px solid #70677d; background: #110f15;
+    color: #fff; font: 11px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  button, a.download { display: inline-block; margin: 0 4px 4px 0; padding: 8px 10px;
+    border: 1px solid #000; background: #7ee0ff; color: #17141d; font: inherit;
+    font-size: 12px; font-weight: 700; text-decoration: none; cursor: pointer; }
 </style>
 </head>
 <body>
 <div class="box">
   <h1>CRAFT RUSH HAS A NEW HOME</h1>
   <p id="msg">Taking you there, and bringing your game with you&hellip;</p>
+  <div class="recovery" id="recovery" hidden>
+    <p>Your save is safe on this device. Copy or download this code before leaving,
+      then use <strong>Settings &rarr; Import save</strong> at the new address.</p>
+    <textarea id="saveCode" readonly aria-label="Craft Rush save code"></textarea>
+    <button id="copySave" type="button">COPY SAVE CODE</button>
+    <a class="download" id="downloadSave" download="craft-rush-save.txt">DOWNLOAD SAVE CODE</a>
+    <p class="dim" id="copyStatus" role="status"></p>
+  </div>
   <p><a class="go" id="go" href="https://craftrush.royashbrook.com/">GO TO CRAFT RUSH</a></p>
   <p class="dim" id="note"></p>
 </div>
@@ -68,6 +85,11 @@
   var msg = document.getElementById('msg');
   var note = document.getElementById('note');
   var go = document.getElementById('go');
+  var recovery = document.getElementById('recovery');
+  var saveCodeField = document.getElementById('saveCode');
+  var copySave = document.getElementById('copySave');
+  var downloadSave = document.getElementById('downloadSave');
+  var copyStatus = document.getElementById('copyStatus');
 
   function b64(str) { return btoa(unescape(encodeURIComponent(str))); }
   function b64url(str) {
@@ -89,12 +111,19 @@
     try {
       if (!('serviceWorker' in navigator)) return Promise.resolve();
       return navigator.serviceWorker.getRegistrations().then(function (regs) {
-        return Promise.all(regs.map(function (r) { return r.unregister(); }));
+        return Promise.all(regs.filter(function (registration) {
+          try {
+            var path = new URL(registration.scope).pathname;
+            return path === '/craftrush/' || path.indexOf('/craftrush/') === 0;
+          } catch (e) {
+            return false;
+          }
+        }).map(function (r) { return r.unregister(); }));
       }).then(function () {
         if (!window.caches || !caches.keys) return null;
         return caches.keys().then(function (keys) {
           return Promise.all(keys.filter(function (k) {
-            return k.indexOf('craftrush') === 0;
+            return k.indexOf('craftrush-') === 0;
           }).map(function (k) { return caches.delete(k); }));
         });
       }).catch(function () { /* best effort, never a blocker */ });
@@ -103,6 +132,7 @@
 
   var url = NEW_ORIGIN;
   var carried = false;
+  var saveCode = '';
   var hadSave = !!read(SAVE_KEY);
   try {
     var raw = read(SAVE_KEY);
@@ -111,7 +141,8 @@
       // prefix, because that is the exact format the game's importSave() reads.
       // The OUTER one is base64url, because the whole thing has to survive being
       // a URL fragment.
-      var payload = { s: 'CR1|' + b64(raw) };
+      saveCode = 'CR1|' + b64(raw);
+      var payload = { s: saveCode };
       var backups = read(BACKUP_KEY);
       if (backups) {
         try { payload.b = JSON.parse(backups); } catch (e) { /* bonus only */ }
@@ -128,9 +159,45 @@
   if (carried) {
     note.textContent = 'Your emeralds, skins and chapters are coming with you.';
   } else if (hadSave) {
-    msg.textContent = 'Craft Rush now lives at craftrush.royashbrook.com';
-    note.textContent = 'This save is too big to carry automatically. Open Settings here first, '
-      + 'copy your save code, then paste it into Settings at the new address.';
+    msg.textContent = 'Your save needs one manual step';
+    note.textContent = 'This save is too large to carry safely in a link, so this page will not '
+      + 'redirect until you choose to leave.';
+    recovery.hidden = false;
+    saveCodeField.value = saveCode;
+
+    function selectAndCopy() {
+      saveCodeField.focus();
+      saveCodeField.select();
+      try {
+        return document.execCommand('copy');
+      } catch (e) {
+        return false;
+      }
+    }
+
+    copySave.addEventListener('click', function () {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(saveCode).then(function () {
+          copyStatus.textContent = 'Save code copied.';
+        }).catch(function () {
+          copyStatus.textContent = selectAndCopy()
+            ? 'Save code copied.'
+            : 'Select the code above and copy it.';
+        });
+      } else {
+        copyStatus.textContent = selectAndCopy()
+          ? 'Save code copied.'
+          : 'Select the code above and copy it.';
+      }
+    });
+
+    try {
+      downloadSave.href = URL.createObjectURL(
+        new Blob([saveCode], { type: 'text/plain;charset=utf-8' }),
+      );
+    } catch (e) {
+      downloadSave.hidden = true;
+    }
   } else {
     msg.textContent = 'Craft Rush now lives at craftrush.royashbrook.com';
   }
@@ -138,7 +205,9 @@
   // Leave on our own, but only after the worker is retired, and never so fast
   // that the button is not there if this somehow does not fire.
   retireWorker().then(function () {
-    setTimeout(function () { location.replace(url); }, carried ? 900 : 1500);
+    if (!hadSave || carried) {
+      setTimeout(function () { location.replace(url); }, carried ? 900 : 1500);
+    }
   });
 })();
 </script>
