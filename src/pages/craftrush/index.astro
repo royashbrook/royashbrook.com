@@ -14,7 +14,9 @@
 //
 // It sends the game's own `CR1|` transfer code, the same thing the in-game export
 // produces, so the new origin runs the import path it already had tested instead
-// of a bespoke one written for a move that happens once.
+// of a bespoke one written for a move that happens once. The portable code also
+// survives iOS's second boundary: Safari and a Home Screen app do not share
+// localStorage, so a player must retain a copy until the installed app restores it.
 //
 // This page is deliberately standalone: no site layout, no shared CSS, no analytics
 // beacon. It is a doorway, and it has to work on a device we cannot test, holding a
@@ -39,6 +41,7 @@
   h1 { font-size: 18px; letter-spacing: 1px; margin: 0 0 12px; color: #7ee0ff; }
   p { font-size: 14px; margin: 0 0 14px; }
   .dim { color: #9a92ad; font-size: 12px; }
+  .warning { color: #ffd36a; font-weight: 700; }
   a.go { display: inline-block; font-weight: 700; text-decoration: none;
     padding: 12px 18px; background: #4a8f2f; color: #fff; border: 2px solid #000; }
   .recovery { margin: 18px 0; padding: 14px; border: 1px solid #51495e;
@@ -50,29 +53,40 @@
   button, a.download { display: inline-block; margin: 0 4px 4px 0; padding: 8px 10px;
     border: 1px solid #000; background: #7ee0ff; color: #17141d; font: inherit;
     font-size: 12px; font-weight: 700; text-decoration: none; cursor: pointer; }
+  .confirm { display: flex; align-items: flex-start; gap: 8px; margin: 10px 0 4px;
+    color: #ffd36a; font-size: 11px; font-weight: 700; cursor: pointer; }
+  .confirm input { flex: 0 0 auto; width: 20px; height: 20px; margin: 0; }
 </style>
 </head>
 <body>
 <div class="box">
   <h1>CRAFT RUSH HAS A NEW HOME</h1>
-  <p id="msg">Taking you there, and bringing your game with you&hellip;</p>
+  <p id="msg">Checking for your saved game&hellip;</p>
   <div class="recovery" id="recovery" hidden>
-    <p>Your save is safe on this device. Copy or download this code before leaving,
-      then use <strong>Settings &rarr; Import save</strong> at the new address.</p>
+    <p class="warning">KEEP THIS OLD APP until the new installed app shows your
+      emeralds and progress.</p>
+    <p>iPhone keeps this app, Safari, and the new Home Screen app in separate
+      storage. Copy or download the code first. After installing the new app,
+      open it and tap <strong>RESTORE COPIED SAVE</strong>.</p>
     <textarea id="saveCode" readonly aria-label="Craft Rush save code"></textarea>
     <button id="copySave" type="button">COPY SAVE CODE</button>
     <a class="download" id="downloadSave" download="craft-rush-save.txt">DOWNLOAD SAVE CODE</a>
+    <label class="confirm">
+      <input id="backupConfirm" type="checkbox" />
+      I HAVE COPIED OR SAVED THIS CODE OUTSIDE THE OLD APP
+    </label>
     <p class="dim" id="copyStatus" role="status"></p>
   </div>
-  <p><a class="go" id="go" href="https://craftrush.royashbrook.com/">GO TO CRAFT RUSH</a></p>
+  <p><a class="go" id="go" href="https://craftrush.royashbrook.com/">OPEN NEW HOME</a></p>
   <p class="dim" id="note"></p>
 </div>
 
 <script is:inline>
 /*
-  Inline, dependency free, and defensive at every step. Every failure path below
-  ends the same way: send them to the new address anyway, and leave the old save
-  exactly where it is. Nothing here deletes a save.
+  Inline, dependency free, and defensive at every step. Nothing automatically
+  navigates away. A player with a save must first make a portable copy, because
+  the fragment handoff reaches Safari but a later Home Screen install does not
+  inherit Safari localStorage. Nothing here deletes a save.
 */
 (function () {
   var NEW_ORIGIN = 'https://craftrush.royashbrook.com/';
@@ -89,6 +103,7 @@
   var saveCodeField = document.getElementById('saveCode');
   var copySave = document.getElementById('copySave');
   var downloadSave = document.getElementById('downloadSave');
+  var backupConfirm = document.getElementById('backupConfirm');
   var copyStatus = document.getElementById('copyStatus');
 
   function b64(str) { return btoa(unescape(encodeURIComponent(str))); }
@@ -99,44 +114,11 @@
     try { return localStorage.getItem(key); } catch (e) { return null; }
   }
 
-  /*
-    Retire the old service worker before leaving.
-
-    It is registered at this path with a cache-first strategy, so left alone it
-    keeps answering here and a returning player could be served the cached game
-    instead of this page. Unregistering only discards CACHED FILES, which are
-    re-downloadable; saves live in localStorage and none of this touches them.
-  */
-  function ownsOldCraftRushWorker(registration) {
-    try {
-      var scope = new URL(registration.scope);
-      return scope.origin === location.origin
-        && (scope.pathname === '/craftrush/' || scope.pathname.indexOf('/craftrush/') === 0);
-    } catch (e) { return false; }
-  }
-
-  function retireWorker() {
-    try {
-      if (!('serviceWorker' in navigator)) return Promise.resolve();
-      return navigator.serviceWorker.getRegistrations().then(function (regs) {
-        // The origin also hosts other installed apps. Only retire the worker
-        // whose scope belonged to Craft Rush at its old path.
-        return Promise.all(regs.filter(ownsOldCraftRushWorker)
-          .map(function (r) { return r.unregister(); }));
-      }).then(function () {
-        if (!window.caches || !caches.keys) return null;
-        return caches.keys().then(function (keys) {
-          return Promise.all(keys.filter(function (k) {
-            return k.indexOf('craftrush-') === 0;
-          }).map(function (k) { return caches.delete(k); }));
-        });
-      }).catch(function () { /* best effort, never a blocker */ });
-    } catch (e) { return Promise.resolve(); }
-  }
-
   var url = NEW_ORIGIN;
   var carried = false;
   var saveCode = '';
+  var clipboardReady = false;
+  var manualBackupReady = false;
   var hadSave = !!read(SAVE_KEY);
   try {
     var raw = read(SAVE_KEY);
@@ -160,39 +142,63 @@
   } catch (e) { /* fall through to a plain move */ }
 
   go.href = url;
-  if (carried) {
-    note.textContent = 'Your emeralds, skins and chapters are coming with you.';
-  } else if (hadSave) {
-    msg.textContent = 'Your save needs one manual step';
-    note.textContent = 'This save is too large to carry safely in a link, so this page will not '
-      + 'redirect until you choose to leave.';
+  function selectAndCopy() {
+    saveCodeField.focus();
+    saveCodeField.select();
+    try {
+      return document.execCommand('copy');
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function copyPortableSave() {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(saveCode).then(function () {
+        return true;
+      }).catch(selectAndCopy);
+    }
+    return Promise.resolve(selectAndCopy());
+  }
+
+  function markCopied(ok) {
+    clipboardReady = ok;
+    copyStatus.textContent = ok
+      ? 'Save code copied. Keep it until the new app shows your progress.'
+      : 'Your save has NOT been copied. Select the code above, copy it, or download the file.';
+    return ok;
+  }
+
+  function openNewHome() {
+    // Do not retire the old worker or its caches here. Until the replacement
+    // install restores and verifies the save, this old icon is the last rescue
+    // copy and must remain reopenable, including offline.
+    location.assign(url);
+  }
+
+  if (hadSave && saveCode) {
+    msg.textContent = 'Back up your save before opening the new home';
     recovery.hidden = false;
     saveCodeField.value = saveCode;
-
-    function selectAndCopy() {
-      saveCodeField.focus();
-      saveCodeField.select();
-      try {
-        return document.execCommand('copy');
-      } catch (e) {
-        return false;
-      }
-    }
+    go.textContent = 'COPY SAVE & OPEN NEW HOME';
+    note.textContent = carried
+      ? 'The browser handoff is ready too, but keep the copied code for the new Home Screen app.'
+      : 'This save is too large for a browser handoff. Restore the copied code in the new app.';
 
     copySave.addEventListener('click', function () {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(saveCode).then(function () {
-          copyStatus.textContent = 'Save code copied.';
-        }).catch(function () {
-          copyStatus.textContent = selectAndCopy()
-            ? 'Save code copied.'
-            : 'Select the code above and copy it.';
-        });
-      } else {
-        copyStatus.textContent = selectAndCopy()
-          ? 'Save code copied.'
-          : 'Select the code above and copy it.';
+      copyPortableSave().then(markCopied);
+    });
+
+    go.addEventListener('click', function (event) {
+      event.preventDefault();
+      if (clipboardReady || manualBackupReady) {
+        openNewHome();
+        return;
       }
+      copyStatus.textContent = 'Copying your save before opening the new home…';
+      copyPortableSave().then(function (ok) {
+        if (markCopied(ok)) openNewHome();
+      });
     });
 
     try {
@@ -202,17 +208,27 @@
     } catch (e) {
       downloadSave.hidden = true;
     }
+    downloadSave.addEventListener('click', function () {
+      copyStatus.textContent = 'If the file appeared in Files, check the box below before continuing.';
+    });
+    backupConfirm.addEventListener('change', function () {
+      manualBackupReady = backupConfirm.checked;
+      copyStatus.textContent = manualBackupReady
+        ? 'Backup confirmed. Keep it until the new app shows your progress.'
+        : 'Confirm the code is outside this old app before continuing.';
+    });
+  } else if (hadSave) {
+    msg.textContent = 'Your save is still here, but this page could not make a portable copy';
+    note.textContent = 'Do not remove this old app. Reload and try again.';
+    go.hidden = true;
   } else {
     msg.textContent = 'Craft Rush now lives at craftrush.royashbrook.com';
+    note.textContent = 'Open the new home when you are ready.';
+    go.addEventListener('click', function (event) {
+      event.preventDefault();
+      openNewHome();
+    });
   }
-
-  // Leave on our own, but only after the worker is retired, and never so fast
-  // that the button is not there if this somehow does not fire.
-  retireWorker().then(function () {
-    if (!hadSave || carried) {
-      setTimeout(function () { location.replace(url); }, carried ? 900 : 1500);
-    }
-  });
 })();
 </script>
 </body>
