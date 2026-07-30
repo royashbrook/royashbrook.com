@@ -13,7 +13,9 @@
 /craftrush/sw.js
   Cache-Control: no-cache
 
-# Quarkatamari's stable shell/PWA metadata must revalidate on every online load.
+# quantamari moved to quantamari.royashbrook.com. this old-path redirect and its worker tombstones
+# must never become stale: returning players should always reach the current home, while retirement
+# cleanup remains scoped to quantamari's own old worker and caches.
 /quarkatamari
   Cache-Control: no-store
 /quarkatamari/
@@ -22,15 +24,8 @@
   Cache-Control: no-store
 /quarkatamari/service-worker.js
   Cache-Control: no-cache
-/quarkatamari/manifest.webmanifest
+/quarkatamari/sw.js
   Cache-Control: no-cache
-/quarkatamari/_app/version.json
-  Cache-Control: no-cache
-
-# SvelteKit fingerprints immutable bundles. Browser caching also prevents the service worker's
-# install-time cache.addAll from downloading a chunk the page just fetched.
-/quarkatamari/_app/immutable/*
-  Cache-Control: public, max-age=31536000, immutable
 
 /*
   X-Content-Type-Options: nosniff

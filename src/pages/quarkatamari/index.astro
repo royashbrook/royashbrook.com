@@ -1,0 +1,87 @@
+---
+// Quantamari now has its own origin. No save migration is needed for this
+// cutover, so the old path only retires its own PWA state and moves.
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#07041d" />
+<meta name="robots" content="noindex" />
+<meta http-equiv="refresh" content="2; url=https://quantamari.royashbrook.com/" />
+<link rel="canonical" href="https://quantamari.royashbrook.com/" />
+<title>Quantamari has moved</title>
+<style>
+  html, body { margin: 0; height: 100%; }
+  body { background: #07041d; color: #fff; display: flex; align-items: center;
+    justify-content: center; padding: 20px; text-align: center;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; line-height: 1.6; }
+  .box { max-width: 430px; }
+  h1 { font-size: 18px; letter-spacing: 1px; margin: 0 0 12px; color: #8fd6ff; }
+  p { font-size: 14px; margin: 0 0 14px; }
+  a.go { display: inline-block; font-weight: 700; text-decoration: none;
+    padding: 12px 18px; background: #3b2f88; color: #fff; border: 2px solid #000; }
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>QUANTAMARI HAS A NEW HOME</h1>
+  <p>Taking you to quantamari.royashbrook.com&hellip;</p>
+  <p><a class="go" href="https://quantamari.royashbrook.com/">GO TO QUANTAMARI</a></p>
+</div>
+
+<script is:inline>
+(function () {
+  var NEW_ORIGIN = 'https://quantamari.royashbrook.com/';
+
+  function retireLegacyApp() {
+    var workerCleanup = Promise.resolve();
+    var cacheCleanup = Promise.resolve();
+
+    try {
+      if ('serviceWorker' in navigator) {
+        workerCleanup = navigator.serviceWorker.getRegistrations().then(function (regs) {
+          return Promise.all(regs.filter(function (registration) {
+            try {
+              var path = new URL(registration.scope).pathname;
+              return path === '/quarkatamari/' || path.indexOf('/quarkatamari/') === 0;
+            } catch (e) {
+              return false;
+            }
+          }).map(function (registration) {
+            return registration.unregister();
+          }));
+        });
+      }
+    } catch (e) { /* best effort */ }
+
+    try {
+      if (window.caches && caches.keys) {
+        cacheCleanup = caches.keys().then(function (keys) {
+          return Promise.all(keys.filter(function (key) {
+            return key.indexOf('quarkatamari-') === 0;
+          }).map(function (key) {
+            return caches.delete(key);
+          }));
+        });
+      }
+    } catch (e) { /* best effort */ }
+
+    return Promise.all([workerCleanup, cacheCleanup]).catch(function () {
+      // Cleanup must never block the move.
+    });
+  }
+
+  var fallback = setTimeout(function () {
+    location.replace(NEW_ORIGIN);
+  }, 1500);
+
+  retireLegacyApp().then(function () {
+    clearTimeout(fallback);
+    location.replace(NEW_ORIGIN);
+  });
+})();
+</script>
+</body>
+</html>
