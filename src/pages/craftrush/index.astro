@@ -85,11 +85,22 @@
     instead of this page. Unregistering only discards CACHED FILES, which are
     re-downloadable; saves live in localStorage and none of this touches them.
   */
+  function ownsOldCraftRushWorker(registration) {
+    try {
+      var scope = new URL(registration.scope);
+      return scope.origin === location.origin
+        && (scope.pathname === '/craftrush/' || scope.pathname.indexOf('/craftrush/') === 0);
+    } catch (e) { return false; }
+  }
+
   function retireWorker() {
     try {
       if (!('serviceWorker' in navigator)) return Promise.resolve();
       return navigator.serviceWorker.getRegistrations().then(function (regs) {
-        return Promise.all(regs.map(function (r) { return r.unregister(); }));
+        // The origin also hosts other installed apps. Only retire the worker
+        // whose scope belonged to Craft Rush at its old path.
+        return Promise.all(regs.filter(ownsOldCraftRushWorker)
+          .map(function (r) { return r.unregister(); }));
       }).then(function () {
         if (!window.caches || !caches.keys) return null;
         return caches.keys().then(function (keys) {
