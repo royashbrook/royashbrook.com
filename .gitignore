@@ -1,10 +1,11 @@
 node_modules/
 dist/
-# games are pulled + built fresh from their own repos at build time (scripts/pull-*.mjs)
-public/craftrush/
+# Both games moved to their own origins. Their former worker URLs remain as
+# tracked retirement files so old installations can cleanly unregister.
+public/craftrush/*
+!public/craftrush/service-worker.js
+!public/craftrush/sw.js
 .craftrush-tmp/
-# Quantamari moved, but its two former worker URLs remain as tracked retirement
-# files so existing PWA registrations can update and unregister themselves.
 public/quarkatamari/*
 !public/quarkatamari/service-worker.js
 !public/quarkatamari/sw.js

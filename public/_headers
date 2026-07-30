@@ -8,6 +8,10 @@
   Cache-Control: no-store
 /craftrush/index.html
   Cache-Control: no-store
+/craftrush/service-worker.js
+  Cache-Control: no-cache
+/craftrush/sw.js
+  Cache-Control: no-cache
 
 # quantamari moved to quantamari.royashbrook.com. this old-path redirect and its worker tombstones
 # must never become stale: returning players should always reach the current home, while retirement
