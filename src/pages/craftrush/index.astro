@@ -1,0 +1,157 @@
+---
+// The handover page for Craft Rush's move to its own address.
+//
+// WHY A PAGE AND NOT A 301. A redirect would move everyone and strand their save.
+// Game progress lives in localStorage, which is scoped to an ORIGIN, and a
+// different hostname is a different origin. Nothing reads across that line any
+// more: the old hidden-iframe handoff is dead, because Safari's ITP and Chrome's
+// storage partitioning each hand a third-party frame its own empty box. The only
+// mechanism left is a FIRST-PARTY read, which is what this page is: it runs on the
+// OLD origin, reads its own storage, and passes the bytes along in a URL fragment.
+//
+// A fragment rather than a query string, because fragments are never sent to a
+// server, so nobody's save ends up in a log.
+//
+// It sends the game's own `CR1|` transfer code, the same thing the in-game export
+// produces, so the new origin runs the import path it already had tested instead
+// of a bespoke one written for a move that happens once.
+//
+// This page is deliberately standalone: no site layout, no shared CSS, no analytics
+// beacon. It is a doorway, and it has to work on a device we cannot test, holding a
+// kid's saved game. It stays until the traffic stops, not for some fixed window: a
+// player who opens it a year from now still gets carried over.
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#17141d" />
+<meta name="robots" content="noindex" />
+<link rel="canonical" href="https://craftrush.royashbrook.com/" />
+<title>Craft Rush has moved</title>
+<style>
+  html, body { margin: 0; height: 100%; }
+  body { background: #17141d; color: #fff; display: flex; align-items: center;
+    justify-content: center; padding: 20px; text-align: center;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; line-height: 1.6; }
+  .box { max-width: 430px; }
+  h1 { font-size: 18px; letter-spacing: 1px; margin: 0 0 12px; color: #7ee0ff; }
+  p { font-size: 14px; margin: 0 0 14px; }
+  .dim { color: #9a92ad; font-size: 12px; }
+  a.go { display: inline-block; font-weight: 700; text-decoration: none;
+    padding: 12px 18px; background: #4a8f2f; color: #fff; border: 2px solid #000; }
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>CRAFT RUSH HAS A NEW HOME</h1>
+  <p id="msg">Taking you there, and bringing your game with you&hellip;</p>
+  <p><a class="go" id="go" href="https://craftrush.royashbrook.com/">GO TO CRAFT RUSH</a></p>
+  <p class="dim" id="note"></p>
+</div>
+
+<script is:inline>
+/*
+  Inline, dependency free, and defensive at every step. Every failure path below
+  ends the same way: send them to the new address anyway, and leave the old save
+  exactly where it is. Nothing here deletes a save.
+*/
+(function () {
+  var NEW_ORIGIN = 'https://craftrush.royashbrook.com/';
+  var SAVE_KEY = 'craftrush_save_v1';
+  var BACKUP_KEY = 'craftrush_backups_v1';
+  // About what a URL fragment carries safely across browsers. A save this large
+  // means something unusual, and a truncated payload is worse than none at all.
+  var MAX_PAYLOAD = 60000;
+
+  var msg = document.getElementById('msg');
+  var note = document.getElementById('note');
+  var go = document.getElementById('go');
+
+  function b64(str) { return btoa(unescape(encodeURIComponent(str))); }
+  function b64url(str) {
+    return b64(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+  function read(key) {
+    try { return localStorage.getItem(key); } catch (e) { return null; }
+  }
+
+  /*
+    Retire the old service worker before leaving.
+
+    It is registered at this path with a cache-first strategy, so left alone it
+    keeps answering here and a returning player could be served the cached game
+    instead of this page. Unregistering only discards CACHED FILES, which are
+    re-downloadable; saves live in localStorage and none of this touches them.
+  */
+  function ownsOldCraftRushWorker(registration) {
+    try {
+      var scope = new URL(registration.scope);
+      return scope.origin === location.origin
+        && (scope.pathname === '/craftrush/' || scope.pathname.indexOf('/craftrush/') === 0);
+    } catch (e) { return false; }
+  }
+
+  function retireWorker() {
+    try {
+      if (!('serviceWorker' in navigator)) return Promise.resolve();
+      return navigator.serviceWorker.getRegistrations().then(function (regs) {
+        // The origin also hosts other installed apps. Only retire the worker
+        // whose scope belonged to Craft Rush at its old path.
+        return Promise.all(regs.filter(ownsOldCraftRushWorker)
+          .map(function (r) { return r.unregister(); }));
+      }).then(function () {
+        if (!window.caches || !caches.keys) return null;
+        return caches.keys().then(function (keys) {
+          return Promise.all(keys.filter(function (k) {
+            return k.indexOf('craftrush') === 0;
+          }).map(function (k) { return caches.delete(k); }));
+        });
+      }).catch(function () { /* best effort, never a blocker */ });
+    } catch (e) { return Promise.resolve(); }
+  }
+
+  var url = NEW_ORIGIN;
+  var carried = false;
+  var hadSave = !!read(SAVE_KEY);
+  try {
+    var raw = read(SAVE_KEY);
+    if (raw) {
+      // Two encodings on purpose. The INNER one is plain base64 with a CR1|
+      // prefix, because that is the exact format the game's importSave() reads.
+      // The OUTER one is base64url, because the whole thing has to survive being
+      // a URL fragment.
+      var payload = { s: 'CR1|' + b64(raw) };
+      var backups = read(BACKUP_KEY);
+      if (backups) {
+        try { payload.b = JSON.parse(backups); } catch (e) { /* bonus only */ }
+      }
+      var frag = b64url(JSON.stringify(payload));
+      if (frag.length <= MAX_PAYLOAD) {
+        url = NEW_ORIGIN + '#cr-migrate=' + frag;
+        carried = true;
+      }
+    }
+  } catch (e) { /* fall through to a plain move */ }
+
+  go.href = url;
+  if (carried) {
+    note.textContent = 'Your emeralds, skins and chapters are coming with you.';
+  } else if (hadSave) {
+    msg.textContent = 'Craft Rush now lives at craftrush.royashbrook.com';
+    note.textContent = 'This save is too big to carry automatically. Open Settings here first, '
+      + 'copy your save code, then paste it into Settings at the new address.';
+  } else {
+    msg.textContent = 'Craft Rush now lives at craftrush.royashbrook.com';
+  }
+
+  // Leave on our own, but only after the worker is retired, and never so fast
+  // that the button is not there if this somehow does not fire.
+  retireWorker().then(function () {
+    setTimeout(function () { location.replace(url); }, carried ? 900 : 1500);
+  });
+})();
+</script>
+</body>
+</html>
