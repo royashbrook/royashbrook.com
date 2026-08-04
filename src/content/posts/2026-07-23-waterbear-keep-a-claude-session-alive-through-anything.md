@@ -19,9 +19,7 @@ a [tardigrade](https://en.wikipedia.org/wiki/Tardigrade), the "water bear", is t
 
 # what actually leaves the gap
 
-the thing that makes a [claude code](https://docs.claude.com/en/docs/claude-code/overview) session reachable from your phone and the desktop app at the same time is remote control mode. it's great, but it's a live process, and anything that ends the process ends the live session: an app update (this is the big one, patches happen constantly and every one is a little death), a reboot, a crash, closing the terminal.
-
-the conversation survives on disk, so you can always reopen it. what doesn't come back is everything around it. remote control doesn't reliably turn itself back on, so your phone can't reach the session until you re-enable it at the machine. the session doesn't always reattach. and anything it was running in the background, a watcher, a scheduled check, stays dead until you come back and start it by hand. so "the session died" really means "you have a manual chore waiting, and you might not know it yet."
+the thing that makes a [claude code](https://docs.claude.com/en/docs/claude-code/overview) session reachable from your phone and the desktop app at once is remote control mode. it's great, but it's a live process, and anything that ends the process ends the live session: an app update (this is the big one, patches happen constantly and every one is a little death), a reboot, a crash, closing the terminal. the conversation is safe on disk, but everything around it, remote control, the reattach, whatever it was running in the background, dies with the process. so "the session died" really means "you have a manual chore waiting, and you might not know it yet."
 
 i wanted the opposite: a session that treats getting killed as a nap.
 
@@ -36,13 +34,6 @@ it's four small pieces, each doing one job:
 
 that resume path is the fun one. the transcript survives the crash on disk, so the agent doesn't start over. it wakes up mid-conversation, knowing everything it knew a second before it got killed, and the wake nudge tells it to re-arm its background watchers so it's fully reachable again.
 
-the smallest version is one line:
-
-```bash
-CLAUDE_RC_NAME=myagent curl -fsSL \
-  https://raw.githubusercontent.com/royashbrook/waterbear/main/scripts/waterbear-install | bash
-```
-
 # i killed it to prove it
 
 the first real test was the obvious mean one. i had an agent waterbear *itself*, set up its own durable body around the conversation we were having, and then i killed its session on purpose. launchd caught the death, relaunched it, it resumed its own transcript, re-armed its background watcher, and picked the thread back up like nothing happened. then i did it again with an actual app patch, the thing that kills every session on the machine at once. same result: it came back on its own, as itself.
@@ -55,6 +46,13 @@ waterbear ships as a [claude code skill](https://docs.claude.com/en/docs/claude-
 
 ```bash
 git clone https://github.com/royashbrook/waterbear ~/.claude/skills/waterbear
+```
+
+or, if you'd rather not involve an agent at all, the installer runs standalone in one line:
+
+```bash
+CLAUDE_RC_NAME=myagent curl -fsSL \
+  https://raw.githubusercontent.com/royashbrook/waterbear/main/scripts/waterbear-install | bash
 ```
 
 # what running a few of these actually taught me
