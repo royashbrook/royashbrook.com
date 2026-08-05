@@ -9,7 +9,7 @@ i run a few [ai agents](https://en.wikipedia.org/wiki/Intelligent_agent) as long
 
 here's the part that surprised me. when a session dies, the conversation itself isn't gone, it's on disk, you can reopen it. the real problem is that **nothing comes back on its own.** the app pushes an update and restarts. your mac reboots. after that you have to go to the machine, restart each session by hand, turn [remote control](https://docs.claude.com/en/docs/claude-code/remote-control) back on so your phone can reach it again, and re-arm whatever each one was running in the background. until you do, it's just sitting there dark, and if you're away you don't even know. now multiply that by a handful of agents, every single time there's an update.
 
-that's the gap waterbear closes. **it keeps a `claude --remote-control` session alive through crashes, patches, quits, and reboots**, and brings it back resuming the exact same conversation, remote control and background jobs and all, with nothing for you to do.
+that's the gap waterbear closes. **it keeps a `claude --remote-control` session alive through crashes, patches, quits, and reboots**, and brings it back resuming the same conversation and remote control, cueing itself to re-arm whatever it was running in the background, with nothing for you to do.
 
 it's open and MIT: [github.com/royashbrook/waterbear](https://github.com/royashbrook/waterbear).
 
@@ -29,10 +29,10 @@ it's four small pieces, each doing one job:
 
 1. **remote control** keeps the session reachable from phone / desktop / web. but it needs a real terminal ([tty](https://en.wikipedia.org/wiki/Computer_terminal)) to run in.
 2. **[tmux](https://en.wikipedia.org/wiki/Tmux)** supplies that terminal, a detached, always-there home the session lives in that you can attach to any time.
-3. **a [launchd](https://en.wikipedia.org/wiki/Launchd) agent** (macos's "keep this running" mechanism) starts a little guard when you log in and restarts it the instant the session dies. this is the "come back on its own" part.
+3. **a [launchd](https://en.wikipedia.org/wiki/Launchd) agent** (macos's "keep this running" mechanism) starts a little guard when you log in and restarts it within seconds when the session dies, on launchd's own restart cycle (with backoff if it's crash-looping). this is the "come back on its own" part.
 4. **the wake.** launchd has no keyboard, and the first prompt doesn't auto-run, so once the ui settles the guard types it in for you. two flavors: a *fresh* wake that re-establishes who the agent is (a short role bootstrap), or a *resume* that relaunches the session `--resume`-ing its own on-disk transcript, so it comes back as itself with full context, then types a short cue to re-arm anything that died with the process.
 
-that resume path is the fun one. the transcript survives the crash on disk, so the agent doesn't start over. it wakes up mid-conversation, knowing everything it knew a second before it got killed, and the wake nudge tells it to re-arm its background watchers so it's fully reachable again.
+that resume path is the fun one. the transcript survives the crash on disk, so the agent doesn't start over. it wakes up mid-conversation on the same transcript and conversation context it had a moment before it got killed, and the wake nudge tells it to re-arm its background watchers so it's fully reachable again.
 
 # i killed it to prove it
 
@@ -44,11 +44,20 @@ that's the whole point. a patch used to mean "go find every session and wake it 
 
 waterbear ships as a [claude code skill](https://docs.claude.com/en/docs/claude-code/skills). you don't wire tmux and launchd by hand, you point an agent at the repo and tell it to "waterbear yourself", and it reads the instructions and sets up its own durable body. the only thing you provide is the one-line wake prompt that says who it should be when it comes back.
 
+if you'd rather drive it yourself, it's on [npm](https://www.npmjs.com/package/@royashbrook/waterbear), and that's also how you update it:
+
+```bash
+npx @royashbrook/waterbear install
+# or: npm i -g @royashbrook/waterbear && waterbear install
+```
+
+`waterbear skill` drops the skill into the scan path so an agent can pick it up from there. to hand the skill straight to an agent instead, clone it:
+
 ```bash
 git clone https://github.com/royashbrook/waterbear ~/.claude/skills/waterbear
 ```
 
-or, if you'd rather not involve an agent at all, the installer runs standalone in one line:
+or, if you'd rather not involve node or an agent at all, the installer runs standalone in one line:
 
 ```bash
 CLAUDE_RC_NAME=myagent curl -fsSL \
@@ -59,11 +68,11 @@ CLAUDE_RC_NAME=myagent curl -fsSL \
 
 respawn-on-death is the easy case. the interesting failures are the ones where the process *doesn't* die, it just gets stuck alive, and running several agents surfaced a couple of those.
 
-one got stranded after an api overload. the model hit an "overloaded, try again" error mid-turn, which killed that turn before it could finish re-arming itself, so its background watcher never came back up. the process was still running, so launchd left it alone, but it was sitting there idle and silently unreachable. respawn-on-death can't catch that one, because nothing died.
+one got stranded after an api overload. the model hit an "overloaded, try again" error mid-turn, which killed that turn before it could finish re-arming itself, so its background watcher never came back up. the process was still running, so launchd left it alone, but it was sitting there idle and silently unreachable. respawn-on-death can't catch that one, because nothing died. that exact failure drove a fix: the always-on watcher moved out of the session and into the guard itself, so it now survives a killed turn instead of dying with it.
 
 another one hung. it was a heavy session, hundreds of thousands of tokens deep, and the client just froze, not taking input, remote control dropped. alive, but useless.
 
-there were a couple of resume gotchas too. a big enough session now comes back behind a "resume from summary or the full thing?" prompt, which a scripted wake can't click through on its own. and a message you had queued while the session was busy will replay when it resumes, which is usually what you want, but it means a queued command can fire on respawn, so it's worth knowing.
+there were a couple of resume gotchas too. a big enough session comes back behind a "resume from summary or the full thing?" prompt that a scripted wake used to stall on; the guard now spots that prompt and picks the recommended summary option itself. the other one's still live: a message you had queued while the session was busy will replay when it resumes, which is usually what you want, but it means a queued command can fire on respawn, so it's worth knowing.
 
 none of these are dealbreakers, they're the normal texture of keeping real processes alive, and each one turned into a small fix. but they point at the thing i didn't expect going in.
 
@@ -81,7 +90,7 @@ a couple things worth saying plainly:
 
 - **it's local to one machine.** waterbear is launchd + tmux + a `claude` process on *your* computer. it keeps that body alive on that mac, it doesn't follow you to another machine or run in the cloud. it's for a session running on hardware you own.
 - **it's a macos reference implementation.** the pattern ports cleanly, swap launchd for a [systemd](https://en.wikipedia.org/wiki/Systemd) user service on linux and keep the same guard logic, but the installer i'm shipping is mac.
-- **a stuck-but-alive session still needs a nudge.** respawn-on-death covers the clean case. the stranded and hung ones above don't trip it, because the process is technically still running, so those still need someone (or, as it turns out, some *thing*) to notice and kick it.
+- **some stuck-but-alive sessions still need a nudge.** respawn-on-death covers the clean case, and waterbear has since grown to catch a couple of the messy ones too: a sustained network drop or a long sleep now trips a deliberate respawn. but a genuinely wedged client, a dropped connection, or a login-or-permission stall still looks alive to launchd, so those need someone (or, as it turns out, some *thing*) to notice and kick it.
 
 none of that's a surprise once you see what it is: a small, honest wrapper that turns "your session died" into "your session took a nap." if you keep an agent running for real work, that's the difference between it being always-on and it being always-on until the next update.
 
@@ -90,4 +99,4 @@ none of that's a surprise once you see what it is: a small, honest wrapper that 
 - clone it: [github.com/royashbrook/waterbear](https://github.com/royashbrook/waterbear)
 - or point an agent at the repo and say "waterbear yourself"
 
-it's MIT, it's one script plus a skill, and it's named after the toughest animal i could find. seemed fitting for the thing whose entire job is to not stay dead.
+it's MIT, it's a small bash toolset plus a skill and a zero-dependency node launcher, and it's named after the toughest animal i could find. seemed fitting for the thing whose entire job is to not stay dead.
