@@ -1,4 +1,5 @@
 import { projects, projectLinkOrder } from '../data/projects.js';
+import { games, gameLinkOrder } from '../data/games.js';
 import { tools } from '../data/agents.js';
 
 // /llms.txt — a machine-readable index so an agent scanning the site can find
@@ -12,6 +13,13 @@ export function GET() {
   for (const p of projects) {
     const links = projectLinkOrder.filter((k) => p[k]).map((k) => `${k}: ${p[k]}`).join(' | ');
     out.push(`- ${p.name}: ${p.desc} (${links})`);
+  }
+  out.push('');
+  out.push('## games');
+  out.push('# small browser games, free forever: no ads, no lives, no timers, nothing to buy, no accounts, no tracking. each installs to a phone and plays offline.');
+  for (const g of games) {
+    const links = gameLinkOrder.filter((k) => g[k]).map((k) => `${k}: ${g[k]}`).join(' | ');
+    out.push(`- ${g.name}: ${g.desc} (${links})`);
   }
   out.push('');
   out.push('## for ai agents');

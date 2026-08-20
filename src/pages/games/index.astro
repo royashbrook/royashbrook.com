@@ -1,0 +1,19 @@
+---
+import Base from '../../layouts/Base.astro';
+import { games, gameLinkOrder } from '../../data/games.js';
+---
+<Base title="games — roy ashbrook">
+  <section>
+    <p class="marker">&gt; games</p>
+    <p class="note">small browser games, free forever. no ads, no lives, no timers, nothing to buy, no accounts, no tracking. each one installs to your phone and plays offline.</p>
+    <div class="cards">
+      {games.map((g) => (
+        <div class="card">
+          <div class="t">{g.name}</div>
+          <div class="d">{g.desc}</div>
+          <div class="meta">{gameLinkOrder.filter((k) => g[k]).map((k, i) => (<>{i > 0 ? ' · ' : ''}<a href={g[k]}>{k}</a></>))}</div>
+        </div>
+      ))}
+    </div>
+  </section>
+</Base>

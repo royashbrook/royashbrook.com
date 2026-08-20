@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 import { projects, projectLinkOrder } from '../data/projects.js';
+import { games, gameLinkOrder } from '../data/games.js';
 
 // real feed off the ported collection — top 3 newest (drafts excluded), plus the live count.
 const all = (await getCollection('posts', ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
@@ -43,6 +44,19 @@ const earliest = all.length ? all[all.length - 1].data.date.getUTCFullYear() : '
         <div class="d">sql-spider · blame-mcp · skills + mcps i've made</div>
       </div>
     </a>
+  </section>
+
+  <section id="games">
+    <p class="marker"><a href="/games/" style="color:inherit;text-decoration:none;">&gt; games</a></p>
+    <div class="cards">
+      {games.map((g) => (
+        <div class="card">
+          <div class="t">{g.name}</div>
+          <div class="d">{g.desc}</div>
+          <div class="meta">{gameLinkOrder.filter((k) => g[k]).map((k, i) => (<>{i > 0 ? ' · ' : ''}<a href={g[k]}>{k}</a></>))}</div>
+        </div>
+      ))}
+    </div>
   </section>
 
   <section id="elsewhere">
