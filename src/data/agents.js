@@ -1,6 +1,6 @@
 // the "for ai agents" shelf, used by /agents + /llms.txt.
 // the `royashbrook-tool` repos auto-populate here (single source = the github topic): each is a skill
-// that ALSO exposes a discovery MCP at royashbrook.com/<name>. tools not in Roy's topic (a different
+// that ALSO exposes a discovery MCP at royashbrook.com/<name>. tools not in my topic (a different
 // org, etc.) are hand-listed below.
 // type: 'skill' = drop-in agent skill (clone) | 'mcp' = remote mcp server (an endpoint).
 import { tools as registry } from './tools.js';
@@ -16,7 +16,7 @@ const auto = registry.map((t) => ({
   ],
 }));
 
-// not in Roy's topic (different org) , curated by hand.
+// not in my topic (different org) , curated by hand.
 const extra = [
   {
     name: 'mtok.market',

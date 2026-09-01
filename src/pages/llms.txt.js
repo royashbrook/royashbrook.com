@@ -1,6 +1,7 @@
 import { projects, projectLinkOrder } from '../data/projects.js';
 import { games, gameLinkOrder } from '../data/games.js';
 import { tools } from '../data/agents.js';
+import { tools as skills } from '../data/tools.js';
 
 // /llms.txt — a machine-readable index so an agent scanning the site can find
 // the projects and the agent tooling (and tell a skill from an mcp).
@@ -20,6 +21,13 @@ export function GET() {
   for (const g of games) {
     const links = gameLinkOrder.filter((k) => g[k]).map((k) => `${k}: ${g[k]}`).join(' | ');
     out.push(`- ${g.name}: ${g.desc} (${links})`);
+  }
+  out.push('');
+  out.push('## skills');
+  out.push('# drop-in agent skills, auto-listed from the royashbrook-tool github topic. each has a SKILL.md to clone and an mcp endpoint.');
+  for (const s of skills) {
+    const links = ['repo', 'skill', 'mcp'].filter((k) => s[k]).map((k) => `${k}: ${s[k]}`).join(' | ');
+    out.push(`- ${s.name}: ${s.desc} (${links})`);
   }
   out.push('');
   out.push('## for ai agents');

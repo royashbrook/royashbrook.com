@@ -1,18 +1,7 @@
 // projects, used by the home teaser + /projects + /llms.txt.
-// the `royashbrook-tool` repos auto-populate (single source = the github topic), each with its repo,
-// skill, and royashbrook.com/<name> mcp endpoint. sites/apps + other-org projects are hand-listed.
+// sites/apps with their own front door, hand-curated. agent skills live on /skills (auto from the
+// `royashbrook-tool` topic via tools.js), games on /games.
 // links rendered in order: site, repo, skill, mcp (only the ones present show).
-import { tools as registry } from './tools.js';
-
-const toolProjects = registry.map((t) => ({
-  name: t.name,
-  desc: t.desc,
-  repo: t.repo,
-  skill: t.skill,
-  mcp: t.mcp,
-}));
-
-// not in Roy's tool topic (sites/apps, other orgs) , hand-curated.
 const other = [
   {
     name: 'blame.today',
@@ -45,7 +34,7 @@ const other = [
   },
 ];
 
-export const projects = [...toolProjects, ...other];
+export const projects = other;
 
 // the link types in display order, for the card meta + llms.txt.
 export const projectLinkOrder = ['site', 'repo', 'skill', 'mcp'];

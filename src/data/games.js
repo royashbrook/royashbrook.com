@@ -1,6 +1,6 @@
 // games, used by the home teaser + /games + /llms.txt.
 // small browser games, each on its own <name>.royashbrook.com PWA origin, free forever.
-// hand-listed (they are not in Roy's tool topic). links render in order: play, repo.
+// hand-listed (they are not in my tool topic). links render in order: play, repo.
 export const games = [
   {
     name: 'quarry',
@@ -31,6 +31,12 @@ export const games = [
     desc: 'a blocky crowd-runner. grow your mob, blast creepers, beat the boss.',
     play: 'https://craftrush.royashbrook.com',
     repo: 'https://github.com/royashbrook/craftrush',
+  },
+  {
+    name: 'jumpit',
+    desc: 'a storybook platform game for kids. hop through the pages.',
+    play: 'https://jumpit.royashbrook.com',
+    repo: 'https://github.com/royashbrook/jumpit',
   },
   {
     name: 'quantamari',

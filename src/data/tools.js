@@ -1,5 +1,5 @@
 // build-time tool registry , the `royashbrook-tool` github topic is the single source of truth for
-// Roy's published agent tools. tag a public repo and it shows up on /projects, /agents, and /llms.txt,
+// my published agent tools. tag a public repo and it shows up on /skills, /agents, and /llms.txt,
 // and gets its royashbrook.com/<name> MCP endpoint (served by the worker). every push rebuilds, and a
 // daily scheduled deploy picks up new tags. fetched once at build; if github is unreachable the build
 // fails loudly rather than shipping an empty shelf (the previous good deploy stays live).
