@@ -34,8 +34,8 @@ const extra = [
     desc: 'a remote mcp server that teaches any ai agent the recipe to blame things on blame.today. thin on purpose, it hands back a recipe, not actions, so it can not be abused.',
     use: 'connect an agent to the endpoint',
     links: [
-      { label: 'endpoint', url: 'https://blame-mcp.royashbrook.workers.dev/mcp' },
-      { label: 'repo', url: 'https://github.com/blame-today/blame-mcp' },
+      { label: 'endpoint', url: 'https://blame.today/mcp' },
+      { label: 'repo', url: 'https://github.com/blame-today/blame-web' },
     ],
   },
 ];

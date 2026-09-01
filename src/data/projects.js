@@ -9,7 +9,7 @@ const other = [
     site: 'https://blame.today',
     repo: 'https://github.com/blame-today/blame-web',
     skill: 'https://blame.today/agents/blame-bot.skill.md',
-    mcp: 'https://blame-mcp.royashbrook.workers.dev/mcp',
+    mcp: 'https://blame.today/mcp',
   },
   {
     name: 'lifescored.com',
