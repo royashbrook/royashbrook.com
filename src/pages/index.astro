@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 import { projects, projectLinkOrder } from '../data/projects.js';
 import { games, gameLinkOrder } from '../data/games.js';
-import { tools } from '../data/tools.js';
+import { skills as tools } from '../data/skills.js';
 
 // real feed off the ported collection — top 3 newest (drafts excluded), plus the live count.
 const all = (await getCollection('posts', ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());

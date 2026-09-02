@@ -1,10 +1,9 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { tools } from '../../data/tools.js';
+import { skills as tools, skillLinkOrder as linkOrder } from '../../data/skills.js';
 
-// the human-facing skills shelf. auto-populated from the `royashbrook-tool` github
-// topic (tools.js), same registry the /agents shelf and the mcp worker read.
-const linkOrder = ['repo', 'skill', 'mcp'];
+// the human-facing skills shelf, from the one combined registry (skills.js): the github-topic
+// auto-discovery plus the adapters for skills that live inside product repos or other orgs.
 ---
 <Base title="skills — roy ashbrook">
   <section>

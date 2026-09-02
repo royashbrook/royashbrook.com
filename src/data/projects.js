@@ -32,9 +32,16 @@ const other = [
     site: 'https://neveraway.github.io',
     repo: 'https://github.com/neveraway/neveraway',
   },
+  {
+    name: 'motor-fuel-tax-formats',
+    desc: 'pure powershell formatters that turn a flat record set into a us state motor-fuel tax filing file, seven states, no database, network, or credentials in the module. one of the modules on my powershell gallery profile, the rest are the working archive.',
+    repo: 'https://github.com/royashbrook/motor-fuel-tax-formats',
+    package: 'https://www.powershellgallery.com/packages/MotorFuelTaxFormats',
+    gallery: 'https://www.powershellgallery.com/profiles/royashbrook',
+  },
 ];
 
 export const projects = other;
 
 // the link types in display order, for the card meta + llms.txt.
-export const projectLinkOrder = ['site', 'repo', 'skill', 'mcp'];
+export const projectLinkOrder = ['site', 'repo', 'package', 'gallery', 'skill', 'mcp'];

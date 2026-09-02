@@ -3,7 +3,7 @@
 // that ALSO exposes a discovery MCP at royashbrook.com/<name>. tools not in my topic (a different
 // org, etc.) are hand-listed below.
 // type: 'skill' = drop-in agent skill (clone) | 'mcp' = remote mcp server (an endpoint).
-import { tools as registry } from './tools.js';
+import { skills as registry } from './skills.js';
 
 const auto = registry.map((t) => ({
   name: t.name,

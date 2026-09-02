@@ -1,7 +1,7 @@
 import { projects, projectLinkOrder } from '../data/projects.js';
 import { games, gameLinkOrder } from '../data/games.js';
 import { tools } from '../data/agents.js';
-import { tools as skills } from '../data/tools.js';
+import { skills } from '../data/skills.js';
 
 // /llms.txt — a machine-readable index so an agent scanning the site can find
 // the projects and the agent tooling (and tell a skill from an mcp).
