@@ -17,7 +17,7 @@ export function GET() {
   }
   out.push('');
   out.push('## games');
-  out.push('# small browser games, free forever: no ads, no lives, no timers, nothing to buy, no accounts, no tracking. each installs to a phone and plays offline.');
+  out.push('# small browser games, free forever: no ads, no lives, no timers, nothing to buy, no accounts, no cookies, nothing sold or shared. each installs to a phone and plays offline.');
   for (const g of games) {
     const links = gameLinkOrder.filter((k) => g[k]).map((k) => `${k}: ${g[k]}`).join(' | ');
     out.push(`- ${g.name}: ${g.desc} (${links})`);
