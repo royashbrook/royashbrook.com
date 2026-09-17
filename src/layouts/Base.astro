@@ -20,19 +20,24 @@ const nav = [
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:type" content="website" />
     <meta name="color-scheme" content="light dark" />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.ico" sizes="any" />
   </head>
   <body>
+    <a class="skip-link" href="#main">skip to content</a>
     <div class="wrap">
       <header class="site-head">
         <a class="name" href="/">roy ashbrook</a>
-        <nav>
-          {nav.map((i) => <a href={i.link}>{i.name}</a>)}
+        <nav aria-label="main">
+          {nav.map((i) => <a href={i.link} aria-current={Astro.url.pathname.startsWith(i.link) ? 'page' : undefined}>{i.name}</a>)}
         </nav>
       </header>
-      <main class="page">
+      <main id="main" class="page" tabindex="-1">
         <slot />
       </main>
       <Footer />

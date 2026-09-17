@@ -1,9 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
+import Cards from '../components/Cards.astro';
 import { getCollection } from 'astro:content';
 import { projects, projectLinkOrder } from '../data/projects.js';
-import { games, gameLinkOrder } from '../data/games.js';
-import { skills as tools } from '../data/skills.js';
 
 // real feed off the ported collection — top 3 newest (drafts excluded), plus the live count.
 const all = (await getCollection('posts', ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
@@ -14,12 +13,13 @@ const earliest = all.length ? all[all.length - 1].data.date.getUTCFullYear() : '
 ---
 <Base>
   <div class="hero">
+    <h1>roy ashbrook</h1>
     <div class="kicker">dad, hub, coder, tech fan</div>
     <p>welcome to my site. i like automation and techy things. sometimes i write something or publish a tool.</p>
   </div>
 
   <section id="writing">
-    <p class="marker">&gt; writing</p>
+    <h2 class="marker">&gt; writing</h2>
     <ul class="posts">
       {recent.map((r) => (
         <li><a href={r.url}>{r.title}</a><span class="date">{r.date}</span></li>
@@ -29,16 +29,9 @@ const earliest = all.length ? all[all.length - 1].data.date.getUTCFullYear() : '
   </section>
 
   <section id="projects">
-    <p class="marker"><a href="/projects/" style="color:inherit;text-decoration:none;">&gt; projects</a></p>
-    <div class="cards">
-      {projects.map((p) => (
-        <div class="card">
-          <div class="t">{p.name}</div>
-          <div class="d">{p.desc}</div>
-          <div class="meta">{projectLinkOrder.filter((k) => p[k]).map((k, i) => (<>{i > 0 ? ' · ' : ''}<a href={p[k]}>{k}</a></>))}</div>
-        </div>
-      ))}
-    </div>
+    <h2 class="marker">&gt; selected projects</h2>
+    <Cards items={projects.slice(0, 3)} links={projectLinkOrder} heading="h3" />
+    <p class="more"><a href="/projects/">all projects →</a></p>
     <a href="/agents/" style="text-decoration:none;">
       <div class="strip">
         <div class="t">&gt; for ai agents</div>
@@ -48,33 +41,19 @@ const earliest = all.length ? all[all.length - 1].data.date.getUTCFullYear() : '
   </section>
 
   <section id="games">
-    <p class="marker"><a href="/games/" style="color:inherit;text-decoration:none;">&gt; games</a></p>
-    <div class="cards">
-      {games.map((g) => (
-        <div class="card">
-          <div class="t">{g.name}</div>
-          <div class="d">{g.desc}</div>
-          <div class="meta">{gameLinkOrder.filter((k) => g[k]).map((k, i) => (<>{i > 0 ? ' · ' : ''}<a href={g[k]}>{k}</a></>))}</div>
-        </div>
-      ))}
-    </div>
+    <h2 class="marker">&gt; games</h2>
+    <p>small browser games. free, open source, and made to play.</p>
+    <p class="more"><a href="/games/">find something to play →</a></p>
   </section>
 
   <section id="skills">
-    <p class="marker"><a href="/skills/" style="color:inherit;text-decoration:none;">&gt; skills</a></p>
-    <div class="cards">
-      {tools.map((t) => (
-        <div class="card">
-          <div class="t">{t.name}</div>
-          <div class="d">{t.desc}</div>
-          <div class="meta">{['repo', 'skill', 'mcp'].filter((k) => t[k]).map((k, i) => (<>{i > 0 ? ' · ' : ''}<a href={t[k]}>{k}</a></>))}</div>
-        </div>
-      ))}
-    </div>
+    <h2 class="marker">&gt; skills</h2>
+    <p>tools and playbooks for ai agents, with the source open to inspect and adapt.</p>
+    <p class="more"><a href="/skills/">browse the skills →</a></p>
   </section>
 
   <section id="elsewhere">
-    <p class="marker">&gt; elsewhere</p>
+    <h2 class="marker">&gt; elsewhere</h2>
     <p class="elsewhere"><a href="https://github.com/royashbrook" target="_blank" rel="noopener noreferrer">github</a> · <a href="https://www.linkedin.com/in/royashbrook" target="_blank" rel="noopener noreferrer">linkedin</a></p>
   </section>
 </Base>

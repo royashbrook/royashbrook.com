@@ -13,3 +13,5 @@ public/quarkatamari/*
 .astro/
 .DS_Store
 .wrangler/
+test-results/
+playwright-report/

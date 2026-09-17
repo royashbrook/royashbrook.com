@@ -1,4 +1,5 @@
 ---
+import Cards from '../../components/Cards.astro';
 import Base from '../../layouts/Base.astro';
 import { skills as tools, skillLinkOrder as linkOrder } from '../../data/skills.js';
 
@@ -7,16 +8,8 @@ import { skills as tools, skillLinkOrder as linkOrder } from '../../data/skills.
 ---
 <Base title="skills — roy ashbrook">
   <section>
-    <p class="marker">&gt; skills</p>
+    <h1 class="marker">&gt; skills</h1>
     <p class="note">drop-in skills for ai agents. clone one into your agent's skills folder, or point at the mcp endpoint. free, open source, no accounts.</p>
-    <div class="cards">
-      {tools.map((t) => (
-        <div class="card">
-          <div class="t">{t.name}</div>
-          <div class="d">{t.desc}</div>
-          <div class="meta">{linkOrder.filter((k) => t[k]).map((k, i) => (<>{i > 0 ? ' · ' : ''}<a href={t[k]}>{k}</a></>))}</div>
-        </div>
-      ))}
-    </div>
+    <Cards items={tools} links={linkOrder} />
   </section>
 </Base>
