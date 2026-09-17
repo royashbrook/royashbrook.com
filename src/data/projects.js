@@ -4,6 +4,11 @@
 // links rendered in order: site, repo, skill, mcp (only the ones present show).
 const other = [
   {
+    name: 'strum',
+    desc: 'a guitar tuner that listens to all six strings at once. strum once and each string shows whether it is sharp, flat or in tune. free, no ads, no accounts, works offline, and the audio stays on your device.',
+    site: 'https://strum.royashbrook.com',
+  },
+  {
     name: 'blame.today',
     desc: 'anonymous public blame board. pick who or what you blame today and watch the tally. no account, every vote is a throwaway key on nostr.',
     site: 'https://blame.today',
