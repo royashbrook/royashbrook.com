@@ -1,0 +1,15 @@
+---
+const { items, links, heading = 'h2' } = Astro.props;
+const Heading = heading;
+---
+<div class="cards">
+  {items.map((item) => (
+    <article class="card">
+      <Heading class="t">{item.name}</Heading>
+      <p class="d">{item.desc}</p>
+      <div class="meta">{links.filter((key) => item[key]).map((key, i) => (
+        <>{i > 0 ? ' · ' : ''}<a href={item[key]} aria-label={`${item.name}: ${key}`}>{key}</a></>
+      ))}</div>
+    </article>
+  ))}
+</div>

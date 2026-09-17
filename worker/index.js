@@ -26,12 +26,15 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const seg = url.pathname.split('/').filter(Boolean);
+    // Real pages win over tool names and stay available without GitHub.
+    const asset = ['GET', 'HEAD'].includes(request.method) ? await env.ASSETS.fetch(request) : null;
+    if (asset && asset.status !== 404) return asset;
     if (seg.length === 1) {
       let reg = null;
       try { reg = await registry(); } catch { reg = null; } // fail open -> static site
-      if (reg && reg[seg[0]]) return toolEndpoint(seg[0], reg[seg[0]], request);
+      if (reg && Object.hasOwn(reg, seg[0])) return toolEndpoint(seg[0], reg[seg[0]], request);
     }
-    return env.ASSETS.fetch(request);
+    return asset || env.ASSETS.fetch(request);
   },
 };
 
@@ -40,6 +43,7 @@ async function registry() {
   const r = await fetch(`https://api.github.com/users/${OWNER}/repos?per_page=100`, {
     headers: { 'User-Agent': UA, Accept: 'application/vnd.github+json' },
     cf: CACHE,
+    signal: AbortSignal.timeout(3000),
   });
   if (!r.ok) throw new Error(`github repos api ${r.status}`);
   const out = {};
@@ -54,7 +58,7 @@ async function registry() {
 async function getSkill(slug, info) {
   for (const file of ['SKILL.md', 'AGENTS.md', 'README.md']) {
     const u = `https://raw.githubusercontent.com/${OWNER}/${slug}/${info.branch}/${file}`;
-    const r = await fetch(u, { headers: { 'User-Agent': UA }, cf: CACHE });
+    const r = await fetch(u, { headers: { 'User-Agent': UA }, cf: CACHE, signal: AbortSignal.timeout(3000) });
     if (r.ok) return `# ${slug} (${file})\n# repo: ${info.repo}\n# install: git clone ${info.repo}\n# source: ${u}\n\n${await r.text()}`;
   }
   throw new Error(`no SKILL.md / AGENTS.md / README.md found in ${slug}`);
