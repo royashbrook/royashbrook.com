@@ -9,6 +9,11 @@
   "account_id": "b13c1cf2483bdad430b91ae25126e984",
   "compatibility_date": "2026-06-15",
   "main": "worker/index.js",
+  "ratelimits": [{
+    "name": "TOOL_REQUESTS",
+    "namespace_id": "739191609",
+    "simple": { "limit": 30, "period": 60 }
+  }],
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS"

@@ -10,6 +10,8 @@
 // each /<tool> endpoint: an agent (POST JSON-RPC) gets that tool's MCP -> get_skill returns its
 // SKILL.md so the agent can install + use it. a human (browser GET) gets a 302 to the github repo.
 
+import { BodyTooLarge, readJson } from './read-json.js';
+
 const OWNER = 'royashbrook';
 const TOPIC = 'royashbrook-tool';
 const UA = 'royashbrook.com-mcp';
@@ -30,6 +32,9 @@ export default {
     const asset = ['GET', 'HEAD'].includes(request.method) ? await env.ASSETS.fetch(request) : null;
     if (asset && asset.status !== 404) return asset;
     if (seg.length === 1) {
+      // Share one allowance across tool names and slash variants, before any GitHub work.
+      const { success } = await env.TOOL_REQUESTS.limit({ key: request.headers.get('cf-connecting-ip') || 'unknown' });
+      if (!success) return new Response('too many requests', { status: 429, headers: { ...CORS, 'retry-after': '60' } });
       let reg = null;
       try { reg = await registry(); } catch { reg = null; } // fail open -> static site
       if (reg && Object.hasOwn(reg, seg[0])) return toolEndpoint(seg[0], reg[seg[0]], request);
@@ -75,8 +80,13 @@ async function toolEndpoint(slug, info, request) {
   if (request.method !== 'POST') return new Response('method not allowed', { status: 405, headers: CORS });
 
   let body;
-  try { body = await request.json(); } catch { return json(err(null, -32700, 'parse error'), 400); }
+  try { body = await readJson(request, 64 * 1024); }
+  catch (error) {
+    if (error instanceof BodyTooLarge) return json(err(null, -32600, 'request exceeds 64 KiB'), 413);
+    return json(err(null, -32700, 'parse error'), 400);
+  }
   const batch = Array.isArray(body);
+  if (batch && body.length > 16) return json(err(null, -32600, 'batch exceeds 16 messages'), 413);
   const msgs = batch ? body : [body];
   const out = [];
   for (const m of msgs) {

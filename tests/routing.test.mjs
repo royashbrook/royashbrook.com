@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import worker from '../worker/index.js';
 
+const TOOL_REQUESTS = { limit: async () => ({ success: true }) };
+
 test('static pages do not depend on the tool registry', async (t) => {
   t.mock.method(globalThis, 'fetch', () => { throw new Error('must not reach GitHub'); });
   const env = { ASSETS: { fetch: async () => new Response('page') } };
@@ -15,7 +17,7 @@ test('inherited names use the ordinary asset 404', async (t) => {
   t.mock.method(globalThis, 'fetch', async () => Response.json([]));
   for (const name of ['constructor', 'toString', '__proto__']) {
     let calls = 0;
-    const env = { ASSETS: { fetch: async () => { calls++; return new Response('missing', { status: 404 }); } } };
+    const env = { TOOL_REQUESTS, ASSETS: { fetch: async () => { calls++; return new Response('missing', { status: 404 }); } } };
     const result = await worker.fetch(new Request(`https://example.test/${name}`, { headers: { accept: 'text/html' } }), env);
     assert.equal(result.status, 404);
     assert.equal(calls, 1);
@@ -27,7 +29,7 @@ test('tool discovery retains browser redirects and JSON-RPC', async (t) => {
     assert.ok(options.signal instanceof AbortSignal);
     return Response.json([{ name: 'example', html_url: 'https://github.com/example/tool', default_branch: 'main', topics: ['royashbrook-tool'] }]);
   });
-  const env = { ASSETS: { fetch: async () => new Response('missing', { status: 404 }) } };
+  const env = { TOOL_REQUESTS, ASSETS: { fetch: async () => new Response('missing', { status: 404 }) } };
   const browser = await worker.fetch(new Request('https://example.test/example', { headers: { accept: 'text/html' } }), env);
   assert.equal(browser.status, 302);
   assert.equal(browser.headers.get('location'), 'https://github.com/example/tool');
@@ -37,6 +39,6 @@ test('tool discovery retains browser redirects and JSON-RPC', async (t) => {
 
 test('registry failure preserves the asset fallback', async (t) => {
   t.mock.method(globalThis, 'fetch', async () => { throw new DOMException('timeout', 'TimeoutError'); });
-  const env = { ASSETS: { fetch: async () => new Response('missing', { status: 404 }) } };
+  const env = { TOOL_REQUESTS, ASSETS: { fetch: async () => new Response('missing', { status: 404 }) } };
   assert.equal((await worker.fetch(new Request('https://example.test/missing'), env)).status, 404);
 });
