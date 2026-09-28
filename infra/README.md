@@ -1,8 +1,8 @@
 # infra (opentofu)
 
 The royashbrook.com Cloudflare "clicky-layer" as code: dns records, zone settings, the www->apex
-redirect. State lives in R2 (`royashbrook-tfstate`). Changes flow plan-on-PR / apply-on-merge via
-`.github/workflows/infra.yml`.
+redirect. State lives in R2 (`royashbrook-tfstate`). Pull requests run credential-free
+validation; pushes to main apply through `.github/workflows/infra.yml`.
 
 ## ownership boundary (so wrangler + tofu never fight)
 
@@ -18,8 +18,15 @@ redirect. State lives in R2 (`royashbrook-tfstate`). Changes flow plan-on-PR / a
 
 Three values, kept in the OS keychain via [hush](https://github.com/royashbrook/hush), never printed:
 `royashbrook-cf-tofu-token`, `royashbrook-r2-tofu-key-id`, `royashbrook-r2-tofu-secret` (default `hush`
-namespace, project-prefixed names). They're also pushed to GH Actions secrets as
-`TF_CLOUDFLARE_API_TOKEN`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` for CI.
+namespace, project-prefixed names). CI reads them from the `infrastructure` environment as
+`TF_CLOUDFLARE_API_TOKEN`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`. Restrict that
+environment to the `main` branch. Remove repository-level copies after secure recovery,
+environment installation and a successful main apply; repository secrets remain available
+to changed pull-request workflows.
+
+Before releasing this workflow, recover both R2 credentials into Hush and install them in
+the protected environment. Do not remove the only working copies before recovery succeeds.
+Pull-request validation disables the backend and cannot produce a state-backed plan.
 
 ## running locally
 
