@@ -1,0 +1,28 @@
+sequenceDiagram
+    autonumber
+    actor Me
+    participant P as codex session (gpt-5.6-sol)
+    participant CS as codex security plugin (local)
+    participant D as discovery reviewers
+    participant S as sub-agents (3 each)
+    participant R as dedup reducers
+    participant GH as github
+    Me->>P: "/goal scan all of our tools and open issues for the findings"
+    P->>P: inventory repos, clone targets
+    P->>CS: start deep scan (repo 1 of 22)
+    par 4 reviewers at a time, rolling
+        CS->>D: "run one standard scan"
+        D->>S: spawn 3 sub-agents
+        S-->>D: candidates
+        D->>CS: record draft
+    and
+        CS->>R: merge + dedupe drafts
+        R->>CS: merged findings
+    end
+    loop every ~30 s, for the whole scan
+        P->>CS: still running? (re-reads ~185k tokens of context)
+    end
+    CS-->>P: stop rule met, sealed report
+    P->>CS: complete scan
+    P->>GH: one issue per finding
+    P->>CS: start deep scan (next repo)

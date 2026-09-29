@@ -1,0 +1,23 @@
+sequenceDiagram
+    autonumber
+    actor Me
+    participant P as codex session (gpt-5.6-sol)
+    participant CS as codex security plugin (local)
+    participant W as worker agents (4 to 10)
+    participant GH as github
+    Me->>P: "run daybreak against these repos and see what it finds"
+    P->>P: read the plugin's scan workflow docs (~2 min)
+    P->>GH: open a tracking issue
+    P->>CS: start standard scan (returns right away)
+    P->>W: spawn preflight + baseline + architecture reviewers
+    P->>P: read source itself in parallel
+    loop every 1 to 2 min
+        W-->>P: candidate findings, threat model
+    end
+    P->>CS: record draft (checkpoint)
+    P->>W: spawn 1 to 3 focused investigators (auth, browser, ci)
+    W-->>P: focused findings
+    P->>P: validate each finding against source
+    P->>CS: complete scan (sealed report)
+    P->>GH: comment the results on the tracking issue
+    P-->>Me: summary (5 to 42 min per scan)
