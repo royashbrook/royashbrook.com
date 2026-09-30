@@ -64,7 +64,7 @@ a few things to know about those numbers:
 
 1. 95% of it is cached input. every agent re-reads the same context over and over, and the cache makes that cheap. new input was about 195 million tokens. output was about 37 million. so "4 billion tokens" is true and also kind of misleading.
 2. it's not a bill. these are usage counters from the session logs. i don't have a dollar figure and i'm not going to make one up.
-3. it's not nothing either. i'm on a plan with a weekly allowance. the scans used four weekly limits in one week. so about a month's worth in 4 working days. after the last one ran out, nothing ran for 8 days.
+3. it's not nothing either. i'm on a plan with a weekly allowance. the scans used four weekly limits in one week. so about a month's worth in a week, most of it in 4 working days. after the last one ran out, nothing ran for 8 days.
 
 the deep scans are 93% of the whole thing. and a third of the total went to one run that never finished. it ran all its reviewers, the workers all reported success, and then it never registered a final report. the session kept saying "running" for hours. i finally asked what it was doing, turned it off, and cancelled it. 1.28 billion tokens for zero findings.
 
