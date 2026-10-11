@@ -44,6 +44,18 @@ export const games = [
     play: 'https://quantamari.royashbrook.com',
     repo: 'https://github.com/royashbrook/quantamari',
   },
+  {
+    name: 'zap',
+    desc: 'two-colour capsules fall into the jar. line up four of a colour and zap every germ.',
+    play: 'https://zap.royashbrook.com',
+    repo: 'https://github.com/royashbrook/zap',
+  },
+  {
+    name: 'doku',
+    desc: 'a calm pet logic puzzle. one pet in each row, column and colour region, and no two pets touch.',
+    play: 'https://doku.royashbrook.com',
+    repo: 'https://github.com/royashbrook/doku',
+  },
 ];
 
 // the link types in display order, for the card meta + llms.txt.

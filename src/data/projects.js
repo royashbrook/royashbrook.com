@@ -7,6 +7,7 @@ const other = [
     name: 'strum',
     desc: 'a guitar tuner that listens to all six strings at once. strum once and each string shows whether it is sharp, flat or in tune. free, no ads, no accounts, works offline, and the audio stays on your device.',
     site: 'https://strum.royashbrook.com',
+    repo: 'https://github.com/royashbrook/strum',
   },
   {
     name: 'blame.today',
