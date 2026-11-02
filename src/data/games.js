@@ -56,6 +56,12 @@ export const games = [
     play: 'https://doku.royashbrook.com',
     repo: 'https://github.com/royashbrook/doku',
   },
+  {
+    name: 'bloop',
+    desc: 'drop tiny blobs into the jar. two that match merge into a bigger one, from an atom up toward a whale.',
+    play: 'https://bloop.royashbrook.com',
+    repo: 'https://github.com/royashbrook/bloop',
+  },
 ];
 
 // the link types in display order, for the card meta + llms.txt.
