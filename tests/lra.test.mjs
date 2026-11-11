@@ -20,10 +20,18 @@ test('a slug ignores case and a trailing slash', async () => {
   assert.equal((await go('/Zap/')).headers.get('location'), 'https://zap.royashbrook.com/');
 });
 
-test('root and unknown paths go home with a 302', async () => {
-  for (const p of ['/', '/nope']) {
-    const r = await go(p);
-    assert.equal(r.status, 302);
-    assert.equal(r.headers.get('location'), 'https://royashbrook.com/');
+test('the root lists every link and its target', async () => {
+  const r = await go('/');
+  assert.equal(r.status, 200);
+  const html = await r.text();
+  for (const [s, to] of Object.entries(links)) {
+    assert.ok(html.includes(`href="/${s}"`), s);
+    assert.ok(html.includes(`href="${to}"`), to);
   }
+});
+
+test('an unknown path gets the list with a 404', async () => {
+  const r = await go('/nope');
+  assert.equal(r.status, 404);
+  assert.ok((await r.text()).includes('href="/zap"'));
 });
