@@ -1,0 +1,10 @@
+{
+  // lra.sh short links (lra/worker.js). deploy: `npx wrangler deploy -c lra/wrangler.jsonc`,
+  // also run by .github/workflows/deploy.yml after the site.
+  "name": "lra-sh",
+  "account_id": "b13c1cf2483bdad430b91ae25126e984",
+  "compatibility_date": "2026-06-15",
+  "main": "worker.js",
+  "workers_dev": false,
+  "routes": [{ "pattern": "lra.sh", "custom_domain": true }]
+}

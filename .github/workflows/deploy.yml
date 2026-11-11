@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
       - run: npm ci
@@ -40,5 +40,11 @@ jobs:
       - name: deploy to cloudflare
         if: github.event_name != 'pull_request'
         run: ./node_modules/.bin/wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      # lra.sh short links read src/data/games.js, so they ship with the site
+      - name: deploy lra.sh
+        if: github.event_name != 'pull_request'
+        run: ./node_modules/.bin/wrangler deploy -c lra/wrangler.jsonc
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
