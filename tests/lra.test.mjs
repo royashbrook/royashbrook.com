@@ -1,13 +1,19 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import worker, { links } from '../lra/worker.js';
+import worker, { apps, links } from '../lra/worker.js';
 import { games } from '../src/data/games.js';
 
 const go = (path) => worker.fetch(new Request(`https://lra.sh${path}`));
 
 test('every listed game has a short link to its play url', () => {
-  assert.equal(Object.keys(links).length, games.length);
+  assert.equal(Object.keys(links).length, games.length + Object.keys(apps).length);
   for (const g of games) assert.ok(Object.values(links).includes(g.play), g.name);
+});
+
+test('an app that is not a game has a short link too', async () => {
+  const r = await go('/vamp');
+  assert.equal(r.status, 301);
+  assert.equal(r.headers.get('location'), 'https://vamp.royashbrook.com/');
 });
 
 test('a game slug is a 301 to the game', async () => {

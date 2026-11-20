@@ -5,7 +5,13 @@
 
 import { games } from '../src/data/games.js';
 
-export const links = Object.fromEntries(games.map((g) => [new URL(g.play).hostname.split('.')[0], g.play]));
+// apps that are not on /games get their short link here.
+export const apps = { vamp: 'https://vamp.royashbrook.com' };
+
+export const links = {
+  ...Object.fromEntries(games.map((g) => [new URL(g.play).hostname.split('.')[0], g.play])),
+  ...apps,
+};
 
 const bare = (u) => u.replace(/^https:\/\//, '').replace(/\/$/, '');
 
