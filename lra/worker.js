@@ -5,8 +5,15 @@
 
 import { games } from '../src/data/games.js';
 
-// apps that are not on /games get their short link here.
-export const apps = { vamp: 'https://vamp.royashbrook.com' };
+// anything live that is not on /games gets its short link here. dash is the short name for clone dash.
+export const apps = {
+  vamp: 'https://vamp.royashbrook.com',
+  dash: 'https://clonedash.royashbrook.com',
+  clonedash: 'https://clonedash.royashbrook.com',
+  strum: 'https://strum.royashbrook.com',
+  jailbirds: 'https://jailbirds.royashbrook.com',
+  lanternkeep: 'https://lanternkeep.royashbrook.com',
+};
 
 export const links = {
   ...Object.fromEntries(games.map((g) => [new URL(g.play).hostname.split('.')[0], g.play])),

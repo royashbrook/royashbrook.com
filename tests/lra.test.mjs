@@ -16,6 +16,12 @@ test('an app that is not a game has a short link too', async () => {
   assert.equal(r.headers.get('location'), 'https://vamp.royashbrook.com/');
 });
 
+test('dash is the short name for clone dash', async () => {
+  const r = await go('/dash');
+  assert.equal(r.status, 301);
+  assert.equal(r.headers.get('location'), 'https://clonedash.royashbrook.com/');
+});
+
 test('a game slug is a 301 to the game', async () => {
   const r = await go('/zap');
   assert.equal(r.status, 301);
